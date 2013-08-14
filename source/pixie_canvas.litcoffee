@@ -26,30 +26,6 @@ Polyfill some dependencies. TODO: Probably eliminate these if possible.
 
         $canvas = $.extend $(canvas),
 
-Passes this canvas to the block with the given matrix transformation
-applied. All drawing methods called within the block will draw
-into the canvas with the transformation applied. The transformation
-is removed at the end of the block, even if the block throws an error.
-
-          withTransform: (matrix, block) ->
-            context.save()
-
-            context.transform(
-              matrix.a,
-              matrix.b,
-              matrix.c,
-              matrix.d,
-              matrix.tx,
-              matrix.ty
-            )
-
-            try
-              block(this)
-            finally
-              context.restore()
-
-            return this
-
 
 `clear` clears the entire canvas (or a portion of it).
 
@@ -494,6 +470,30 @@ It may have accuracy issues depending on the font used.
 
           measureText: (text) ->
             context.measureText(text).width
+
+Passes this canvas to the block with the given matrix transformation
+applied. All drawing methods called within the block will draw
+into the canvas with the transformation applied. The transformation
+is removed at the end of the block, even if the block throws an error.
+
+          withTransform: (matrix, block) ->
+            context.save()
+
+            context.transform(
+              matrix.a,
+              matrix.b,
+              matrix.c,
+              matrix.d,
+              matrix.tx,
+              matrix.ty
+            )
+
+            try
+              block(this)
+            finally
+              context.restore()
+
+            return this
 
 Straight proxy to context `putImageData` method.
 
