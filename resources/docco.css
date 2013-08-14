@@ -210,7 +210,6 @@ ul.sections > li > div {
     -webkit-box-shadow: inset 0 0 5px #e5e5ee;
     box-shadow: inset 0 0 5px #e5e5ee;
     border: 1px solid #dedede;
-    margin:5px 10px 5px 10px;
     padding-bottom: 5px;
   }
 
@@ -503,4 +502,10 @@ pre .tex .formula {
   width: 100%;
   overflow-y: hidden; /* fixes scrollbar flash - kudos to @brettjonesdev */
   padding: 0.5em; /* fixes text jump on Enter keypress */
+  min-height: 200px;
+  box-sizing: border-box;
+}
+
+p.error {
+  color: red;
 }

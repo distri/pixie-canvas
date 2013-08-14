@@ -19,9 +19,7 @@ In order to do that we need to be able to create an editor. The code is the init
       contentElement = $ "<div>",
         class: "content"
 
-      runtimeElement = $ "<canvas>",
-        width: "400px"
-        height: "200px"
+      runtimeElement = $ "<canvas width=400 height=200>"
 
       contentElement.append(runtimeElement)
 
@@ -32,6 +30,8 @@ In order to do that we need to be able to create an editor. The code is the init
       destination.after(exampleSection)
 
       bindUpdates(editorElement, runtimeElement)
+
+Listen to keyup events from an editor and reflect the changes in the example instantly.
 
     bindUpdates = (editorElement, canvasElement) ->
       canvas = canvasElement.pixieCanvas()
@@ -46,14 +46,33 @@ In order to do that we need to be able to create an editor. The code is the init
           try
             canvas.clear()
             eval(code)
+            report.clear()
           catch e
             report(e)
         catch e
           report(e)
 
+Present any error encountered to the user.
+
     ErrorReporter = (editor) ->
-      (error) ->
-        console.log error
+      reporter = (error) ->
+
+Right now we're logging, but we should really display it right next to the editor area.
+
+        if editor.next().is("p.error")
+          editor.next().text(error)
+        else
+          errorParagraph = $ "<p>",
+            class: "error"
+            text: error.toString()
+
+          editor.after(errorParagraph)
+
+      reporter.clear = ->
+        if editor.next().is("p.error")
+          editor.next().remove()
+
+      return reporter
 
 The editor includes an interactive runtime so that changes in the code will be reflected in the runtime.
 

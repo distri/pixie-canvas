@@ -9,6 +9,17 @@ Non-getter methods return `this` for method chaining.
 
     ( ($) ->
 
+Polyfill some dependencies. TODO: Probably eliminate these if possible.
+
+      @Point = (x, y) ->
+        x: x
+        y: y
+
+      Number::clamp = (min, max) ->
+        Math.min(Math.max(min, this), max)
+
+      Math.TAU = 2 * Math.PI
+
       $.fn.pixieCanvas = (options={}) ->
         canvas = this.get(0)
         context = undefined
@@ -33,20 +44,16 @@ is removed at the end of the block, even if the block throws an error.
             )
 
             try
-              block(@)
+              block(this)
             finally
               context.restore()
 
-            return @
+            return this
 
 
-Clear the canvas (or a portion of it).
+`clear` clears the entire canvas (or a portion of it).
 
-To clear the entire canvas
-
-`canvas.clear()`
-
-To clear a portion of the canvas
+To clear the entire canvas use `canvas.clear()`
 
 >     # Set up: Fill canvas with blue
 >     canvas.fill("blue")
@@ -58,23 +65,15 @@ To clear a portion of the canvas
 >       width: 50
 >       height: 50
 
-You can also clear the canvas by passing x, y, width height as
-unnamed parameters:
-
-`canvas.clear(25, 25, 50, 50)`
-
-          clear: (x={}, y, width, height) ->
-            unless y?
-              {x, y, width, height} = x
-
-            x ||= 0
-            y ||= 0
+          clear: ({x, y, width, height}={}) ->
+            x ?= 0
+            y ?= 0
             width = canvas.width unless width?
             height = canvas.height unless height?
 
             context.clearRect(x, y, width, height)
 
-            return @
+            return this
 
 Fills the entire canvas (or a specified section of it) with
 the given color.
@@ -90,22 +89,8 @@ the given color.
 >       height: 50
 >       color: "#FFF"
 
-@param {Number} [x=0] Optional x position to fill from
-
-@param {Number} [y=0] Optional y position to fill from
-
-@param {Number} [width=canvas.width] Optional width of area to fill
-
-@param {Number} [height=canvas.height] Optional height of area to fill
-
-@param {Bounds} [bounds] bounds object to fill
-
-@param {String|Color} [color] color of area to fill
-
-@returns {PixieCanvas} this
-
           fill: (color={}) ->
-            unless color.isString?() || color.channels
+            unless (typeof color is "string") or color.channels
               {x, y, width, height, bounds, color} = color
 
             {x, y, width, height} = bounds if bounds
@@ -118,96 +103,73 @@ the given color.
             @fillColor(color)
             context.fillRect(x, y, width, height)
 
-            return @
+            return this
 
-          ###*
-          A direct map to the Context2d draw image. `GameObject`s
-          that implement drawable will have this wrapped up nicely,
-          so there is a good chance that you will not have to deal with
-          it directly.
+A direct map to the Context2d draw image. `GameObject`s
+that implement drawable will have this wrapped up nicely,
+so there is a good chance that you will not have to deal with
+it directly.
 
-          @name drawImage
-          @methodOf PixieCanvas#
+>     $ "<img>",
+>       src: "https://secure.gravatar.com/avatar/33117162fff8a9cf50544a604f60c045"
+>       load: ->
+>         canvas.drawImage(this, 25, 25)
 
-          @param image
-          @param {Number} sx
-          @param {Number} sy
-          @param {Number} sWidth
-          @param {Number} sHeight
-          @param {Number} dx
-          @param {Number} dy
-          @param {Number} dWidth
-          @param {Number} dHeight
+          drawImage: (args...) ->
+            context.drawImage(args...)
 
-          @returns {PixieCanvas} this
-          ###
-          drawImage: (image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight) ->
-            context.drawImage(image, sx, sy, sWidth, sHeight, dx, dy, dWidth, dHeight)
+            return this
 
-            return @
+Draws a circle at the specified position with the specified
+radius and color.
 
-          ###*
-          Draws a circle at the specified position with the specified
-          radius and color.
+>     # Draw a large orange circle
+>     canvas.drawCircle
+>       radius: 30
+>       position: Point(100, 75)
+>       color: "orange"
+>
+>     # You may also set a stroke
+>     canvas.drawCircle
+>       x: 25
+>       y: 50
+>       radius: 10
+>       color: "blue"
+>       stroke:
+>         color: "red"
+>         width: 1
 
-          <code class="run"><pre>
-          # Draw a large orange circle
-          canvas.drawCircle
-            radius: 30
-            position: Point(100, 75)
-            color: "orange"
+You can pass in circle objects as well.
 
-          # Draw a blue circle with radius 10 at (25, 50)
-          # and a red stroke
-          canvas.drawCircle
-            x: 25
-            y: 50
-            radius: 10
-            color: "blue"
-            stroke:
-              color: "red"
-              width: 1
+>     # Create a circle object to set up the next examples
+>     circle =
+>       radius: 20
+>       x: 50
+>       y: 50
+>
+>     # Draw a given circle in yellow
+>     canvas.drawCircle
+>       circle: circle
+>       color: "yellow"
+>
+>     # Draw the circle in green at a different position
+>     canvas.drawCircle
+>       circle: circle
+>       position: Point(25, 75)
+>       color: "green"
 
-          # Create a circle object to set up the next examples
-          circle =
-            radius: 20
-            x: 50
-            y: 50
+You may set a stroke, or even pass in only a stroke to draw an unfilled circle.
 
-          # Draw a given circle in yellow
-          canvas.drawCircle
-            circle: circle
-            color: "yellow"
+>     # Draw an outline circle in purple.
+>     canvas.drawCircle
+>       x: 50
+>       y: 75
+>       radius: 10
+>       stroke:
+>         color: "purple"
+>         width: 2
+>
 
-          # Draw the circle in green at a different position
-          canvas.drawCircle
-            circle: circle
-            position: Point(25, 75)
-            color: "green"
-
-          # Draw an outline circle in purple.
-          canvas.drawCircle
-            x: 50
-            y: 75
-            radius: 10
-            stroke:
-              color: "purple"
-              width: 2
-          </pre></code>
-
-          @name drawCircle
-          @methodOf PixieCanvas#
-
-          @param {Number} [x] location on the x axis to start drawing
-          @param {Number} [y] location on the y axis to start drawing
-          @param {Point} [position] position object of location to start drawing. This will override x and y values passed
-          @param {Number} [radius] length of the radius of the circle
-          @param {Color|String} [color] color of the circle
-          @param {Circle} [circle] circle object that contains position and radius. Overrides x, y, and radius if passed
-          @param {Stroke} [stroke] stroke object that specifies stroke color and stroke width
-
-          @returns {PixieCanvas} this
-          ###
           drawCircle: ({x, y, radius, position, color, stroke, circle}) ->
             {x, y, radius} = circle if circle
             {x, y} = position if position
@@ -227,68 +189,52 @@ the given color.
               @lineWidth(stroke.width)
               context.stroke()
 
-            return @
+            return this
 
-          ###*
-          Draws a rectangle at the specified position with given
-          width and height. Optionally takes a position, bounds
-          and color argument.
+Draws a rectangle at the specified position with given
+width and height. Optionally takes a position, bounds
+and color argument.
 
-          <code class="run"><pre>
-          # Draw a red rectangle using x, y, width and height
-          canvas.drawRect
-            x: 50
-            y: 50
-            width: 50
-            height: 50
-            color: "#F00"
+>     # Draw a red rectangle using x, y, width and height
+>     canvas.drawRect
+>       x: 50
+>       y: 50
+>       width: 50
+>       height: 50
+>       color: "#F00"
 
-          # Draw a blue rectangle using position, width and height
-          # and throw in a stroke for good measure
-          canvas.drawRect
-            position: Point(0, 0)
-            width: 50
-            height: 50
-            color: "blue"
-            stroke:
-              color: "orange"
-              width: 3
+You can mix and match position, witdth and height.
 
-          # Set up a bounds object for the next examples
-          bounds =
-            x: 100
-            y: 0
-            width: 100
-            height: 100
+>     canvas.drawRect
+>       position: Point(0, 0)
+>       width: 50
+>       height: 50
+>       color: "blue"
+>       stroke:
+>         color: "orange"
+>         width: 3
 
-          # Draw a purple rectangle using bounds
-          canvas.drawRect
-            bounds: bounds
-            color: "green"
+A bounds can be reused to draw multiple rectangles.
 
-          # Draw the outline of the same bounds, but at a different position
-          canvas.drawRect
-            bounds: bounds
-            position: Point(0, 50)
-            stroke:
-              color: "purple"
-              width: 2
-          </pre></code>
+>     bounds =
+>       x: 100
+>       y: 0
+>       width: 100
+>       height: 100
+>
+>     # Draw a purple rectangle using bounds
+>     canvas.drawRect
+>       bounds: bounds
+>       color: "green"
+>
+>     # Draw the outline of the same bounds, but at a different position
+>     canvas.drawRect
+>       bounds: bounds
+>       position: Point(0, 50)
+>       stroke:
+>         color: "purple"
+>         width: 2
 
-          @name drawRect
-          @methodOf PixieCanvas#
-
-          @param {Number} [x] location on the x axis to start drawing
-          @param {Number} [y] location on the y axis to start drawing
-          @param {Number} [width] width of rectangle to draw
-          @param {Number} [height] height of rectangle to draw
-          @param {Point} [position] position to start drawing. Overrides x and y if passed
-          @param {Color|String} [color] color of rectangle
-          @param {Bounds} [bounds] bounds of rectangle. Overrides x, y, width, height if passed
-          @param {Stroke} [stroke] stroke object that specifies stroke color and stroke width
-
-          @returns {PixieCanvas} this
-          ###
           drawRect: ({x, y, width, height, position, bounds, color, stroke}) ->
             {x, y, width, height} = bounds if bounds
             {x, y} = position if position
@@ -304,42 +250,28 @@ the given color.
 
             return @
 
-          ###*
-          Draw a line from `start` to `end`.
+Draw a line from `start` to `end`.
 
-          <code class="run"><pre>
-          # Draw a sweet diagonal
-          canvas.drawLine
-            start: Point(0, 0)
-            end: Point(200, 200)
-            color: "purple"
+>     # Draw a sweet diagonal
+>     canvas.drawLine
+>       start: Point(0, 0)
+>       end: Point(200, 200)
+>       color: "purple"
+>
+>     # Draw another sweet diagonal
+>     canvas.drawLine
+>       start: Point(200, 0)
+>       end: Point(0, 200)
+>       color: "red"
+>       width: 6
+>
+>     # Now draw a sweet horizontal with a direction and a length
+>     canvas.drawLine
+>       start: Point(0, 100)
+>       length: 200
+>       direction: Point(1, 0)
+>       color: "orange"
 
-          # Draw another sweet diagonal
-          canvas.drawLine
-            start: Point(200, 0)
-            end: Point(0, 200)
-            color: "red"
-            width: 6
-
-          # Now draw a sweet horizontal with a direction and a length
-          canvas.drawLine
-            start: Point(0, 100)
-            length: 200
-            direction: Point(1, 0)
-            color: "orange"
-
-          </pre></code>
-
-          @name drawLine
-          @methodOf PixieCanvas#
-
-          @param {Point} start position to start drawing from
-          @param {Point} [end] position to stop drawing
-          @param {Number} [width] width of the line
-          @param {String|Color} [color] color of the line
-
-          @returns {PixieCanvas} this
-          ###
           drawLine: ({start, end, width, color, direction, length}) ->
             width ||= 3
 
@@ -355,35 +287,23 @@ the given color.
             context.closePath()
             context.stroke()
 
-            return @
+            return this
 
-          ###*
-          Draw a polygon.
+Draw a polygon.
 
-          <code class="run"><pre>
-          # Draw a sweet rhombus
-          canvas.drawPoly
-            points: [
-              Point(50, 25)
-              Point(75, 50)
-              Point(50, 75)
-              Point(25, 50)
-            ]
-            color: "purple"
-            stroke:
-              color: "red"
-              width: 2
-          </pre></code>
+>     # Draw a sweet rhombus
+>     canvas.drawPoly
+>       points: [
+>         Point(50, 25)
+>         Point(75, 50)
+>         Point(50, 75)
+>         Point(25, 50)
+>       ]
+>       color: "purple"
+>       stroke:
+>         color: "red"
+>         width: 2
 
-          @name drawPoly
-          @methodOf PixieCanvas#
-
-          @param {Point[]} [points] collection of points that define the vertices of the polygon
-          @param {String|Color} [color] color of the polygon
-          @param {Stroke} [stroke] stroke object that specifies stroke color and stroke width
-
-          @returns {PixieCanvas} this
-          ###
           drawPoly: ({points, color, stroke}) ->
             context.beginPath()
             points.forEach (point, i) ->
@@ -404,39 +324,21 @@ the given color.
 
             return @
 
-          ###*
-          Draw a rounded rectangle.
+Draw a rounded rectangle.
 
-          Adapted from http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html
+Adapted from http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html
 
-          <code class="run"><pre>
-          # Draw a purple rounded rectangle with a red outline
-          canvas.drawRoundRect
-            position: Point(25, 25)
-            radius: 10
-            width: 150
-            height: 100
-            color: "purple"
-            stroke:
-              color: "red"
-              width: 2
-          </pre></code>
+>     # Draw a purple rounded rectangle with a red outline
+>     canvas.drawRoundRect
+>       position: Point(25, 25)
+>       radius: 10
+>       width: 150
+>       height: 100
+>       color: "purple"
+>       stroke:
+>         color: "red"
+>         width: 2
 
-          @name drawRoundRect
-          @methodOf PixieCanvas#
-
-          @param {Number} [x] location on the x axis to start drawing
-          @param {Number} [y] location on the y axis to start drawing
-          @param {Number} [width] width of the rounded rectangle
-          @param {Number} [height] height of the rounded rectangle
-          @param {Number} [radius=5] radius to round the rectangle corners
-          @param {Point} [position] position to start drawing. Overrides x and y if passed
-          @param {Color|String} [color] color of the rounded rectangle
-          @param {Bounds} [bounds] bounds of the rounded rectangle. Overrides x, y, width, and height if passed
-          @param {Stroke} [stroke] stroke object that specifies stroke color and stroke width
-
-          @returns {PixieCanvas} this
-          ###
           drawRoundRect: ({x, y, width, height, radius, position, bounds, color, stroke}) ->
             radius = 5 unless radius?
 
@@ -464,44 +366,29 @@ the given color.
               @strokeColor(stroke.color)
               context.stroke()
 
-            return @
+            return this
 
-          ###*
-          Draws text on the canvas at the given position, in the given color.
-          If no color is given then the previous fill color is used.
+Draws text on the canvas at the given position, in the given color.
+If no color is given then the previous fill color is used.
 
-          <code class="run"><pre>
-          # Fill canvas to indicate bounds
-          canvas.fill
-            color: '#eee'
+>     # Fill canvas to indicate bounds
+>     canvas.fill
+>       color: '#eee'
+>
+>     # A line to indicate the baseline
+>     canvas.drawLine
+>       start: Point(25, 50)
+>       end: Point(125, 50)
+>       color: "#333"
+>       width: 1
+>
+>     # Draw some text, note the position of the baseline
+>     canvas.drawText
+>       position: Point(25, 50)
+>       color: "red"
+>       text: "It's dangerous to go alone"
 
-          # A line to indicate the baseline
-          canvas.drawLine
-            start: Point(25, 50)
-            end: Point(125, 50)
-            color: "#333"
-            width: 1
 
-          # Draw some text, note the position of the baseline
-          canvas.drawText
-            position: Point(25, 50)
-            color: "red"
-            text: "It's dangerous to go alone"
-
-          </pre></code>
-
-          @name drawText
-          @methodOf PixieCanvas#
-
-          @param {Number} [x] location on x axis to start printing
-          @param {Number} [y] location on y axis to start printing
-          @param {String} text text to print
-          @param {Point} [position] position to start printing. Overrides x and y if passed
-          @param {String|Color} [color] color of text to start printing
-          @param {String} [font] font of text to print
-
-          @returns {PixieCanvas} this
-          ###
           drawText: ({x, y, text, position, color, font}) ->
             {x, y} = position if position
 
@@ -509,51 +396,35 @@ the given color.
             @font(font) if font
             context.fillText(text, x, y)
 
-            return @
+            return this
 
-          ###*
-          Centers the given text on the canvas at the given y position. An x position
-          or point position can also be given in which case the text is centered at the
-          x, y or position value specified.
+Centers the given text on the canvas at the given y position. An x position
+or point position can also be given in which case the text is centered at the
+x, y or position value specified.
 
-          <code class="run"><pre>
-          # Fill canvas to indicate bounds
-          canvas.fill
-            color: "#eee"
+>     # Fill canvas to indicate bounds
+>     canvas.fill
+>       color: "#eee"
+>
+>     # A line to indicate the baseline
+>     canvas.drawLine
+>       start: Point(25, 25)
+>       end: Point(125, 25)
+>       color: "#333"
+>       width: 1
+>
+>     # Center text on the screen at y value 25
+>     canvas.centerText
+>       y: 25
+>       color: "red"
+>       text: "It's dangerous to go alone"
+>
+>     # Center text at point (75, 75)
+>     canvas.centerText
+>       position: Point(75, 75)
+>       color: "green"
+>       text: "take this"
 
-          # A line to indicate the baseline
-          canvas.drawLine
-            start: Point(25, 25)
-            end: Point(125, 25)
-            color: "#333"
-            width: 1
-
-          # Center text on the screen at y value 25
-          canvas.centerText
-            y: 25
-            color: "red"
-            text: "It's dangerous to go alone"
-
-          # Center text at point (75, 75)
-          canvas.centerText
-            position: Point(75, 75)
-            color: "green"
-            text: "take this"
-
-          </pre></code>
-
-          @name centerText
-          @methodOf PixieCanvas#
-
-          @param {String} text Text to print
-          @param {Number} [y] location on the y axis to start printing
-          @param {Number} [x] location on the x axis to start printing. Overrides the default centering behavior if passed
-          @param {Point} [position] position to start printing. Overrides x and y if passed
-          @param {String|Color} [color] color of text to print
-          @param {String} [font] font of text to print
-
-          @returns {PixieCanvas} this
-          ###
           centerText: ({text, x, y, position, color, font}) ->
             {x, y} = position if position
 
@@ -569,28 +440,18 @@ the given color.
               y
             }
 
-          ###*
-          A getter / setter method to set the canvas fillColor.
+Setting the fill color:
 
-          <code><pre>
-          # Set the fill color
-          canvas.fillColor('#FF0000')
+`canvas.fillColor("#FF0000")`
 
-          # Passing no arguments returns the fillColor
-          canvas.fillColor()
-          # => '#FF0000'
+Passing no arguments returns the fillColor:
 
-          # You can also pass a Color object
-          canvas.fillColor(Color('sky blue'))
-          </pre></code>
+`canvas.fillColor() # => "#FF000000"`
 
-          @name fillColor
-          @methodOf PixieCanvas#
+You can also pass a Color object:
 
-          @param {String|Color} [color] color to make the canvas fillColor
+`canvas.fillColor(Color('sky blue'))`
 
-          @returns {PixieCanvas} this
-          ###
           fillColor: (color) ->
             if color
               if color.channels
@@ -602,28 +463,18 @@ the given color.
             else
               return context.fillStyle
 
-          ###*
-          A getter / setter method to set the canvas strokeColor.
+Setting the stroke color:
 
-          <code><pre>
-          # Set the stroke color
-          canvas.strokeColor('#FF0000')
+`canvas.strokeColor("#FF0000")`
 
-          # Passing no arguments returns the strokeColor
-          canvas.strokeColor()
-          # => '#FF0000'
+Passing no arguments returns the strokeColor:
 
-          # You can also pass a Color object
-          canvas.strokeColor(Color('sky blue'))
-          </pre></code>
+`canvas.strokeColor() # => "#FF0000"`
 
-          @name strokeColor
-          @methodOf PixieCanvas#
+You can also pass a Color object:
 
-          @param {String|Color} [color] color to make the canvas strokeColor
+`canvas.strokeColor(Color('sky blue'))`
 
-          @returns {PixieCanvas} this
-          ###
           strokeColor: (color) ->
             if color
               if color.channels
@@ -631,48 +482,51 @@ the given color.
               else
                 context.strokeStyle = color
 
-              return @
+              return this
             else
               return context.strokeStyle
 
-          ###*
-          Determine how wide some text is.
+Determine how wide some text is.
 
-          <code><pre>
-          canvas.measureText('Hello World!')
-          # => 55
-          </pre></code>
+`canvas.measureText('Hello World!') # => 55`
 
-          @name measureText
-          @methodOf PixieCanvas#
+It may have accuracy issues depending on the font used.
 
-          @param {String} [text] the text to measure
-
-          @returns {PixieCanvas} this
-          ###
           measureText: (text) ->
             context.measureText(text).width
 
-          putImageData: (imageData, x, y) ->
-            context.putImageData(imageData, x, y)
+Straight proxy to context `putImageData` method.
 
-            return @
+          putImageData: (args...) ->
+            context.putImageData(args...)
+
+            return this
+
+Context getter.
 
           context: ->
             context
 
+Getter for the actual html canvas element.
+
           element: ->
             canvas
 
+Straight proxy to context pattern creation.
+
           createPattern: (image, repitition) ->
             context.createPattern(image, repitition)
+
+Set a clip rectangle.
 
           clip: (x, y, width, height) ->
             context.beginPath()
             context.rect(x, y, width, height)
             context.clip()
 
-            return @
+            return this
+
+Generate accessors that get properties from the context object.
 
         contextAttrAccessor = (attrs...) ->
           attrs.forEach (attr) ->
@@ -683,6 +537,16 @@ the given color.
               else
                 context[attr]
 
+        contextAttrAccessor(
+          "font",
+          "globalAlpha",
+          "globalCompositeOperation",
+          "lineWidth",
+          "textAlign",
+        )
+
+Generate accessors that get properties from the canvas object.
+
         canvasAttrAccessor = (attrs...) ->
           attrs.forEach (attr) ->
             $canvas[attr] = (newVal) ->
@@ -691,14 +555,6 @@ the given color.
                 return @
               else
                 canvas[attr]
-
-        contextAttrAccessor(
-          "font",
-          "globalAlpha",
-          "globalCompositeOperation",
-          "lineWidth",
-          "textAlign",
-        )
 
         canvasAttrAccessor(
           "height",
@@ -712,5 +568,7 @@ the given color.
             options.init($canvas)
 
           return $canvas
+
+Depend on either jQuery or Zepto for now (TODO: Don't depend on either)
 
     )(jQuery ? Zepto)
