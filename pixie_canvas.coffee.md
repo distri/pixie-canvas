@@ -599,6 +599,6 @@ Interactive Examples
 >     Interactive.register "paint", ({source, runtimeElement}) ->
 >       canvasElement = $ "<canvas width=400 height=200>"
 >       code = CoffeeScript.compile(source)
-> 
+>
 >       runtimeElement.empty().append canvasElement
->       Function(canvas, code)(canvasElement.pixieCanvas())
+>       Function("canvas", code)(canvasElement.pixieCanvas())
