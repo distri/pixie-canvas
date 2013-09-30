@@ -591,11 +591,12 @@ Depend on either jQuery or Zepto for now (TODO: Don't depend on either)
 
     )(jQuery ? Zepto)
 
-
 Interactive Examples
 --------------------
 
 >     #! setup
+>     require "/pixie_canvas"
+>
 >     Interactive.register "paint", ({source, runtimeElement}) ->
 >       canvasElement = $ "<canvas width=400 height=200>"
 >       code = CoffeeScript.compile(source)
