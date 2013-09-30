@@ -31,6 +31,7 @@ Polyfill some dependencies. TODO: Probably eliminate these if possible.
 
 To clear the entire canvas use `canvas.clear()`
 
+>     #! paint
 >     # Set up: Fill canvas with blue
 >     canvas.fill("blue")
 >
@@ -54,6 +55,7 @@ To clear the entire canvas use `canvas.clear()`
 Fills the entire canvas (or a specified section of it) with
 the given color.
 
+>     #! paint
 >     # Paint the town (entire canvas) red
 >     canvas.fill "red"
 >
@@ -86,6 +88,7 @@ that implement drawable will have this wrapped up nicely,
 so there is a good chance that you will not have to deal with
 it directly.
 
+>     #! paint
 >     $ "<img>",
 >       src: "https://secure.gravatar.com/avatar/33117162fff8a9cf50544a604f60c045"
 >       load: ->
@@ -99,6 +102,7 @@ it directly.
 Draws a circle at the specified position with the specified
 radius and color.
 
+>     #! paint
 >     # Draw a large orange circle
 >     canvas.drawCircle
 >       radius: 30
@@ -117,6 +121,7 @@ radius and color.
 
 You can pass in circle objects as well.
 
+>     #! paint
 >     # Create a circle object to set up the next examples
 >     circle =
 >       radius: 20
@@ -136,6 +141,7 @@ You can pass in circle objects as well.
 
 You may set a stroke, or even pass in only a stroke to draw an unfilled circle.
 
+>     #! paint
 >     # Draw an outline circle in purple.
 >     canvas.drawCircle
 >       x: 50
@@ -171,6 +177,7 @@ Draws a rectangle at the specified position with given
 width and height. Optionally takes a position, bounds
 and color argument.
 
+>     #! paint
 >     # Draw a red rectangle using x, y, width and height
 >     canvas.drawRect
 >       x: 50
@@ -179,8 +186,11 @@ and color argument.
 >       height: 50
 >       color: "#F00"
 
+----
+
 You can mix and match position, witdth and height.
 
+>     #! paint
 >     canvas.drawRect
 >       position: Point(0, 0)
 >       width: 50
@@ -190,8 +200,11 @@ You can mix and match position, witdth and height.
 >         color: "orange"
 >         width: 3
 
+----
+
 A bounds can be reused to draw multiple rectangles.
 
+>     #! paint
 >     bounds =
 >       x: 100
 >       y: 0
@@ -228,6 +241,7 @@ A bounds can be reused to draw multiple rectangles.
 
 Draw a line from `start` to `end`.
 
+>     #! paint
 >     # Draw a sweet diagonal
 >     canvas.drawLine
 >       start: Point(0, 0)
@@ -267,6 +281,7 @@ Draw a line from `start` to `end`.
 
 Draw a polygon.
 
+>     #! paint
 >     # Draw a sweet rhombus
 >     canvas.drawPoly
 >       points: [
@@ -304,6 +319,7 @@ Draw a rounded rectangle.
 
 Adapted from http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html
 
+>     #! paint
 >     # Draw a purple rounded rectangle with a red outline
 >     canvas.drawRoundRect
 >       position: Point(25, 25)
@@ -347,6 +363,7 @@ Adapted from http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangle
 Draws text on the canvas at the given position, in the given color.
 If no color is given then the previous fill color is used.
 
+>     #! paint
 >     # Fill canvas to indicate bounds
 >     canvas.fill
 >       color: '#eee'
@@ -378,6 +395,7 @@ Centers the given text on the canvas at the given y position. An x position
 or point position can also be given in which case the text is centered at the
 x, y or position value specified.
 
+>     #! paint
 >     # Fill canvas to indicate bounds
 >     canvas.fill
 >       color: "#eee"
@@ -572,3 +590,15 @@ Generate accessors that get properties from the canvas object.
 Depend on either jQuery or Zepto for now (TODO: Don't depend on either)
 
     )(jQuery ? Zepto)
+
+
+Interactive Examples
+--------------------
+
+>     #! setup
+>     Interactive.register "paint", ({source, runtimeElement}) ->
+>       canvasElement = $ "<canvas width=400 height=200>"
+>       code = CoffeeScript.compile(source)
+> 
+>       runtimeElement.empty().append canvasElement
+>       Function(canvas, code)(canvasElement.pixieCanvas())
