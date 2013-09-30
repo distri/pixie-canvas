@@ -1,16 +1,4 @@
-<!doctype html>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-<script class="env" src="//code.jquery.com/jquery-1.10.1.min.js"></script>
-<script class="env" src="http://strd6.github.io/tempest/javascripts/envweb.js"></script>
-<script class="env" src="http://strd6.github.io/require/v0.2.0.js"></script>
-</head>
-<body>
-<script>
-;(function(PACKAGE) {
-var require = Require.generateFor(PACKAGE);
-require('./pixie_canvas')
-})({
+window["STRd6/pixie-canvas:master"]({
   "version": "0.8.0",
   "source": {
     "package.json": {
@@ -166,6 +154,3 @@ require('./pixie_canvas')
     "url": "http://strd6.github.io/editor/"
   }
 });
-</script>
-</body>
-</html>
