@@ -1,0 +1,7 @@
+entryPoint: "pixie_canvas"
+version: "0.8.0"
+remoteDependencies: [
+  "//code.jquery.com/jquery-1.10.1.min.js"
+  "http://strd6.github.io/tempest/javascripts/envweb.js"
+  "http://strd6.github.io/require/v0.2.0.js"
+]
