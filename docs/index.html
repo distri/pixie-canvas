@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>pixie_canvas</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    <ul class="sections">
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <h1 id="pixie-canvas">Pixie Canvas</h1>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">
+</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>PixieCanvas provides a convenient wrapper for working with Context2d.</p>
+<p>Methods try to be as flexible as possible as to what arguments they take.</p>
+<p>Non-getter methods return <code>this</code> for method chaining.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">( ($) -&gt;</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>Polyfill some dependencies. TODO: Probably eliminate these if possible.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">  <span class="property">@Point</span> = (x, y) -&gt;
+    x: x
+    y: y
+
+  Number::<span class="function"><span class="title">clamp</span></span> = (min, max) -&gt;
+    Math.min(Math.max(min, <span class="keyword">this</span>), max)
+
+  Math.TAU = <span class="number">2</span> * Math.PI
+
+  $.fn.<span class="function"><span class="title">pixieCanvas</span></span> = (options={}) -&gt;
+    canvas = <span class="keyword">this</span>.get(<span class="number">0</span>)
+    context = <span class="literal">undefined</span>
+
+    $canvas = $.extend $(canvas),</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p><code>clear</code> clears the entire canvas (or a portion of it).</p>
+<p>To clear the entire canvas use <code>canvas.clear()</code></p>
+<blockquote>
+<pre><code># Set up: Fill canvas with blue
+canvas.fill(&quot;blue&quot;)
+
+# Clear a portion of the canvas
+canvas.clear
+  x: 50
+  y: 50
+  width: 50
+  height: 50</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      clear: ({x, y, width, height}={}) -&gt;
+        x ?= <span class="number">0</span>
+        y ?= <span class="number">0</span>
+        width = canvas.width <span class="keyword">unless</span> width?
+        height = canvas.height <span class="keyword">unless</span> height?
+
+        context.clearRect(x, y, width, height)
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Fills the entire canvas (or a specified section of it) with
+the given color.</p>
+<blockquote>
+<pre><code># Paint the town (entire canvas) red
+canvas.fill &quot;red&quot;
+
+# Fill a section of the canvas white (#FFF)
+canvas.fill
+  x: 50
+  y: 50
+  width: 50
+  height: 50
+  color: &quot;#FFF&quot;</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      fill: (color={}) -&gt;
+        <span class="keyword">unless</span> (<span class="keyword">typeof</span> color <span class="keyword">is</span> <span class="string">"string"</span>) <span class="keyword">or</span> color.channels
+          {x, y, width, height, bounds, color} = color
+
+        {x, y, width, height} = bounds <span class="keyword">if</span> bounds
+
+        x ||= <span class="number">0</span>
+        y ||= <span class="number">0</span>
+        width = canvas.width <span class="keyword">unless</span> width?
+        height = canvas.height <span class="keyword">unless</span> height?
+
+        <span class="property">@fillColor</span>(color)
+        context.fillRect(x, y, width, height)
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>A direct map to the Context2d draw image. <code>GameObject</code>s
+that implement drawable will have this wrapped up nicely,
+so there is a good chance that you will not have to deal with
+it directly.</p>
+<blockquote>
+<pre><code>$ &quot;&lt;img&gt;&quot;,
+  src: &quot;https://secure.gravatar.com/avatar/33117162fff8a9cf50544a604f60c045&quot;
+  load: -&gt;
+    canvas.drawImage(this, 25, 25)</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawImage: (args...) -&gt;
+        context.drawImage(args...)
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>Draws a circle at the specified position with the specified
+radius and color.</p>
+<blockquote>
+<pre><code># Draw a large orange circle
+canvas.drawCircle
+  radius: 30
+  position: Point(100, 75)
+  color: &quot;orange&quot;
+
+# You may also set a stroke
+canvas.drawCircle
+  x: 25
+  y: 50
+  radius: 10
+  color: &quot;blue&quot;
+  stroke:
+    color: &quot;red&quot;
+    width: 1</code></pre>
+</blockquote>
+<p>You can pass in circle objects as well.</p>
+<blockquote>
+<pre><code># Create a circle object to set up the next examples
+circle =
+  radius: 20
+  x: 50
+  y: 50
+
+# Draw a given circle in yellow
+canvas.drawCircle
+  circle: circle
+  color: &quot;yellow&quot;
+
+# Draw the circle in green at a different position
+canvas.drawCircle
+  circle: circle
+  position: Point(25, 75)
+  color: &quot;green&quot;</code></pre>
+</blockquote>
+<p>You may set a stroke, or even pass in only a stroke to draw an unfilled circle.</p>
+<blockquote>
+<pre><code># Draw an outline circle in purple.
+canvas.drawCircle
+  x: 50
+  y: 75
+  radius: 10
+  stroke:
+    color: &quot;purple&quot;
+    width: 2</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawCircle: ({x, y, radius, position, color, stroke, circle}) -&gt;
+        {x, y, radius} = circle <span class="keyword">if</span> circle
+        {x, y} = position <span class="keyword">if</span> position
+
+        radius = radius.clamp(<span class="number">0</span>, Infinity)
+
+        context.beginPath()
+        context.arc(x, y, radius, <span class="number">0</span>, Math.TAU, <span class="literal">true</span>)
+        context.closePath()
+
+        <span class="keyword">if</span> color
+          <span class="property">@fillColor</span>(color)
+          context.fill()
+
+        <span class="keyword">if</span> stroke
+          <span class="property">@strokeColor</span>(stroke.color)
+          <span class="property">@lineWidth</span>(stroke.width)
+          context.stroke()
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-8">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-8">&#182;</a>
+              </div>
+              <p>Draws a rectangle at the specified position with given
+width and height. Optionally takes a position, bounds
+and color argument.</p>
+<blockquote>
+<pre><code># Draw a red rectangle using x, y, width and height
+canvas.drawRect
+  x: 50
+  y: 50
+  width: 50
+  height: 50
+  color: &quot;#F00&quot;</code></pre>
+</blockquote>
+<p>You can mix and match position, witdth and height.</p>
+<blockquote>
+<pre><code>canvas.drawRect
+  position: Point(0, 0)
+  width: 50
+  height: 50
+  color: &quot;blue&quot;
+  stroke:
+    color: &quot;orange&quot;
+    width: 3</code></pre>
+</blockquote>
+<p>A bounds can be reused to draw multiple rectangles.</p>
+<blockquote>
+<pre><code>bounds =
+  x: 100
+  y: 0
+  width: 100
+  height: 100
+
+# Draw a purple rectangle using bounds
+canvas.drawRect
+  bounds: bounds
+  color: &quot;green&quot;
+
+# Draw the outline of the same bounds, but at a different position
+canvas.drawRect
+  bounds: bounds
+  position: Point(0, 50)
+  stroke:
+    color: &quot;purple&quot;
+    width: 2</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawRect: ({x, y, width, height, position, bounds, color, stroke}) -&gt;
+        {x, y, width, height} = bounds <span class="keyword">if</span> bounds
+        {x, y} = position <span class="keyword">if</span> position
+
+        <span class="keyword">if</span> color
+          <span class="property">@fillColor</span>(color)
+          context.fillRect(x, y, width, height)
+
+        <span class="keyword">if</span> stroke
+          <span class="property">@strokeColor</span>(stroke.color)
+          <span class="property">@lineWidth</span>(stroke.width)
+          context.strokeRect(x, y, width, height)
+
+        <span class="keyword">return</span> @</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-9">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-9">&#182;</a>
+              </div>
+              <p>Draw a line from <code>start</code> to <code>end</code>.</p>
+<blockquote>
+<pre><code># Draw a sweet diagonal
+canvas.drawLine
+  start: Point(0, 0)
+  end: Point(200, 200)
+  color: &quot;purple&quot;
+
+# Draw another sweet diagonal
+canvas.drawLine
+  start: Point(200, 0)
+  end: Point(0, 200)
+  color: &quot;red&quot;
+  width: 6
+
+# Now draw a sweet horizontal with a direction and a length
+canvas.drawLine
+  start: Point(0, 100)
+  length: 200
+  direction: Point(1, 0)
+  color: &quot;orange&quot;</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawLine: ({start, end, width, color, direction, length}) -&gt;
+        width ||= <span class="number">3</span>
+
+        <span class="keyword">if</span> direction
+          end = direction.norm(length).add(start)
+
+        <span class="property">@lineWidth</span>(width)
+        <span class="property">@strokeColor</span>(color)
+
+        context.beginPath()
+        context.moveTo(start.x, start.y)
+        context.lineTo(end.x, end.y)
+        context.closePath()
+        context.stroke()
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>Draw a polygon.</p>
+<blockquote>
+<pre><code># Draw a sweet rhombus
+canvas.drawPoly
+  points: [
+    Point(50, 25)
+    Point(75, 50)
+    Point(50, 75)
+    Point(25, 50)
+  ]
+  color: &quot;purple&quot;
+  stroke:
+    color: &quot;red&quot;
+    width: 2</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawPoly: ({points, color, stroke}) -&gt;
+        context.beginPath()
+        points.forEach (point, i) -&gt;
+          <span class="keyword">if</span> i == <span class="number">0</span>
+            context.moveTo(point.x, point.y)
+          <span class="keyword">else</span>
+            context.lineTo(point.x, point.y)
+        context.lineTo points[<span class="number">0</span>].x, points[<span class="number">0</span>].y
+
+        <span class="keyword">if</span> color
+          <span class="property">@fillColor</span>(color)
+          context.fill()
+
+        <span class="keyword">if</span> stroke
+          <span class="property">@strokeColor</span>(stroke.color)
+          <span class="property">@lineWidth</span>(stroke.width)
+          context.stroke()
+
+        <span class="keyword">return</span> @</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-11">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-11">&#182;</a>
+              </div>
+              <p>Draw a rounded rectangle.</p>
+<p>Adapted from <a href="http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html">http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html</a></p>
+<blockquote>
+<pre><code># Draw a purple rounded rectangle with a red outline
+canvas.drawRoundRect
+  position: Point(25, 25)
+  radius: 10
+  width: 150
+  height: 100
+  color: &quot;purple&quot;
+  stroke:
+    color: &quot;red&quot;
+    width: 2</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawRoundRect: ({x, y, width, height, radius, position, bounds, color, stroke}) -&gt;
+        radius = <span class="number">5</span> <span class="keyword">unless</span> radius?
+
+        {x, y, width, height} = bounds <span class="keyword">if</span> bounds
+        {x, y} = position <span class="keyword">if</span> position
+
+        context.beginPath()
+        context.moveTo(x + radius, y)
+        context.lineTo(x + width - radius, y)
+        context.quadraticCurveTo(x + width, y, x + width, y + radius)
+        context.lineTo(x + width, y + height - radius)
+        context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height)
+        context.lineTo(x + radius, y + height)
+        context.quadraticCurveTo(x, y + height, x, y + height - radius)
+        context.lineTo(x, y + radius)
+        context.quadraticCurveTo(x, y, x + radius, y)
+        context.closePath()
+
+        <span class="keyword">if</span> color
+          <span class="property">@fillColor</span>(color)
+          context.fill()
+
+        <span class="keyword">if</span> stroke
+          <span class="property">@lineWidth</span>(stroke.width)
+          <span class="property">@strokeColor</span>(stroke.color)
+          context.stroke()
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-12">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-12">&#182;</a>
+              </div>
+              <p>Draws text on the canvas at the given position, in the given color.
+If no color is given then the previous fill color is used.</p>
+<blockquote>
+<pre><code># Fill canvas to indicate bounds
+canvas.fill
+  color: &#39;#eee&#39;
+
+# A line to indicate the baseline
+canvas.drawLine
+  start: Point(25, 50)
+  end: Point(125, 50)
+  color: &quot;#333&quot;
+  width: 1
+
+# Draw some text, note the position of the baseline
+canvas.drawText
+  position: Point(25, 50)
+  color: &quot;red&quot;
+  text: &quot;It&#39;s dangerous to go alone&quot;</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      drawText: ({x, y, text, position, color, font}) -&gt;
+        {x, y} = position <span class="keyword">if</span> position
+
+        <span class="property">@fillColor</span>(color)
+        <span class="property">@font</span>(font) <span class="keyword">if</span> font
+        context.fillText(text, x, y)
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-13">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Centers the given text on the canvas at the given y position. An x position
+or point position can also be given in which case the text is centered at the
+x, y or position value specified.</p>
+<blockquote>
+<pre><code># Fill canvas to indicate bounds
+canvas.fill
+  color: &quot;#eee&quot;
+
+# A line to indicate the baseline
+canvas.drawLine
+  start: Point(25, 25)
+  end: Point(125, 25)
+  color: &quot;#333&quot;
+  width: 1
+
+# Center text on the screen at y value 25
+canvas.centerText
+  y: 25
+  color: &quot;red&quot;
+  text: &quot;It&#39;s dangerous to go alone&quot;
+
+# Center text at point (75, 75)
+canvas.centerText
+  position: Point(75, 75)
+  color: &quot;green&quot;
+  text: &quot;take this&quot;</code></pre>
+</blockquote>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      centerText: ({text, x, y, position, color, font}) -&gt;
+        {x, y} = position <span class="keyword">if</span> position
+
+        x = canvas.width / <span class="number">2</span> <span class="keyword">unless</span> x?
+
+        textWidth = <span class="property">@measureText</span>(text)
+
+        <span class="property">@drawText</span> {
+          text
+          color
+          font
+          x: x - (textWidth) / <span class="number">2</span>
+          y
+        }</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>Setting the fill color:</p>
+<p><code>canvas.fillColor(&quot;#FF0000&quot;)</code></p>
+<p>Passing no arguments returns the fillColor:</p>
+<p><code>canvas.fillColor() # =&gt; &quot;#FF000000&quot;</code></p>
+<p>You can also pass a Color object:</p>
+<p><code>canvas.fillColor(Color(&#39;sky blue&#39;))</code></p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      fillColor: (color) -&gt;
+        <span class="keyword">if</span> color
+          <span class="keyword">if</span> color.channels
+            context.fillStyle = color.toString()
+          <span class="keyword">else</span>
+            context.fillStyle = color
+
+          <span class="keyword">return</span> @
+        <span class="keyword">else</span>
+          <span class="keyword">return</span> context.fillStyle</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-15">&#182;</a>
+              </div>
+              <p>Setting the stroke color:</p>
+<p><code>canvas.strokeColor(&quot;#FF0000&quot;)</code></p>
+<p>Passing no arguments returns the strokeColor:</p>
+<p><code>canvas.strokeColor() # =&gt; &quot;#FF0000&quot;</code></p>
+<p>You can also pass a Color object:</p>
+<p><code>canvas.strokeColor(Color(&#39;sky blue&#39;))</code></p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      strokeColor: (color) -&gt;
+        <span class="keyword">if</span> color
+          <span class="keyword">if</span> color.channels
+            context.strokeStyle = color.toString()
+          <span class="keyword">else</span>
+            context.strokeStyle = color
+
+          <span class="keyword">return</span> <span class="keyword">this</span>
+        <span class="keyword">else</span>
+          <span class="keyword">return</span> context.strokeStyle</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-16">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Determine how wide some text is.</p>
+<p><code>canvas.measureText(&#39;Hello World!&#39;) # =&gt; 55</code></p>
+<p>It may have accuracy issues depending on the font used.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      measureText: (text) -&gt;
+        context.measureText(text).width</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Passes this canvas to the block with the given matrix transformation
+applied. All drawing methods called within the block will draw
+into the canvas with the transformation applied. The transformation
+is removed at the end of the block, even if the block throws an error.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      withTransform: (matrix, block) -&gt;
+        context.save()
+
+        context.transform(
+          matrix.a,
+          matrix.b,
+          matrix.c,
+          matrix.d,
+          matrix.tx,
+          matrix.ty
+        )
+
+        <span class="keyword">try</span>
+          block(<span class="keyword">this</span>)
+        <span class="keyword">finally</span>
+          context.restore()
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-18">&#182;</a>
+              </div>
+              <p>Straight proxy to context <code>putImageData</code> method.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      putImageData: (args...) -&gt;
+        context.putImageData(args...)
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-19">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-19">&#182;</a>
+              </div>
+              <p>Context getter.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      context: -&gt;
+        context</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-20">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-20">&#182;</a>
+              </div>
+              <p>Getter for the actual html canvas element.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      element: -&gt;
+        canvas</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-21">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-21">&#182;</a>
+              </div>
+              <p>Straight proxy to context pattern creation.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      createPattern: (image, repitition) -&gt;
+        context.createPattern(image, repitition)</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-22">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-22">&#182;</a>
+              </div>
+              <p>Set a clip rectangle.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">      clip: (x, y, width, height) -&gt;
+        context.beginPath()
+        context.rect(x, y, width, height)
+        context.clip()
+
+        <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-23">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-23">&#182;</a>
+              </div>
+              <p>Generate accessors that get properties from the context object.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">    <span class="function"><span class="title">contextAttrAccessor</span></span> = (attrs...) -&gt;
+      attrs.forEach (attr) -&gt;
+        $canvas[attr] = (newVal) -&gt;
+          <span class="keyword">if</span> newVal?
+            context[attr] = newVal
+            <span class="keyword">return</span> @
+          <span class="keyword">else</span>
+            context[attr]
+
+    contextAttrAccessor(
+      <span class="string">"font"</span>,
+      <span class="string">"globalAlpha"</span>,
+      <span class="string">"globalCompositeOperation"</span>,
+      <span class="string">"lineWidth"</span>,
+      <span class="string">"textAlign"</span>,
+    )</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-24">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-24">&#182;</a>
+              </div>
+              <p>Generate accessors that get properties from the canvas object.</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">    <span class="function"><span class="title">canvasAttrAccessor</span></span> = (attrs...) -&gt;
+      attrs.forEach (attr) -&gt;
+        $canvas[attr] = (newVal) -&gt;
+          <span class="keyword">if</span> newVal?
+            canvas[attr] = newVal
+            <span class="keyword">return</span> @
+          <span class="keyword">else</span>
+            canvas[attr]
+
+    canvasAttrAccessor(
+      <span class="string">"height"</span>,
+      <span class="string">"width"</span>,
+    )
+
+    <span class="keyword">if</span> canvas?.getContext
+      context = canvas.getContext(<span class="string">'2d'</span>)
+
+      <span class="keyword">if</span> options.init
+        options.init($canvas)
+
+      <span class="keyword">return</span> $canvas</code></pre>
+</div>
+        </li>
+        
+        
+        <li id="section-25">
+            <div class="annotation">
+              <div class="pilwrap">
+                <a class="pilcrow" href="#section-25">&#182;</a>
+              </div>
+              <p>Depend on either jQuery or Zepto for now (TODO: Don&#39;t depend on either)</p>
+
+            </div>
+            <div class="content"><pre><code class="lang-coffeescript">)(jQuery ? Zepto)</code></pre>
+</div>
+        </li>
+        
+    </ul>
+  </div>
+  <script src="//code.jquery.com/jquery-1.10.1.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/coffee-script/1.6.3/coffee-script.min.js"></script>
+<script src="http://strd6.github.io/interactive/v0.7.0.js"></script>
+<script src="http://strd6.github.io/tempest/javascripts/envweb.js"></script>
+<script src="http://strd6.github.io/require/v0.1.0.js"></script>
+<script>
+  (function(pkg) {
+    // Expose a require for our package so scripts can access our modules
+    window.require = Require.generateFor(pkg);
+  })({
+  "version": "0.8.0",
+  "source": {
+    "package.json": {
+      "path": "package.json",
+      "mode": "100644",
+      "content": "{\n  \"name\": \"pixie-canvas\",\n  \"version\": \"0.8.0\",\n  \"description\": \"Wrapper for HTML5 canvas\",\n  \"devDependencies\": {\n    \"coffee-script\": \"~1.6.3\",\n    \"mocha\": \"~1.12.0\",\n    \"uglify-js\": \"~2.3.6\",\n    \"docco\": \"~0.6.2\"\n  },\n  \"dependencies\": {\n    \"athletic-support\": \"~0.1.0\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/STRd6/pixie-canvas.git\"\n  },\n  \"files\": [\n    \"dist\"\n  ],\n  \"scripts\": {\n    \"prepublish\": \"script/prepublish\",\n    \"test\": \"script/test\"\n  },\n  \"main\": \"dist/pixie-canvas.js\"\n}\n",
+      "type": "blob"
+    },
+    "pixie_canvas.coffee.md": {
+      "path": "pixie_canvas.coffee.md",
+      "mode": "100644",
+      "content": "Pixie Canvas\n============\n\nPixieCanvas provides a convenient wrapper for working with Context2d.\n\nMethods try to be as flexible as possible as to what arguments they take.\n\nNon-getter methods return `this` for method chaining.\n\n    ( ($) ->\n\nPolyfill some dependencies. TODO: Probably eliminate these if possible.\n\n      @Point = (x, y) ->\n        x: x\n        y: y\n\n      Number::clamp = (min, max) ->\n        Math.min(Math.max(min, this), max)\n\n      Math.TAU = 2 * Math.PI\n\n      $.fn.pixieCanvas = (options={}) ->\n        canvas = this.get(0)\n        context = undefined\n\n        $canvas = $.extend $(canvas),\n\n\n`clear` clears the entire canvas (or a portion of it).\n\nTo clear the entire canvas use `canvas.clear()`\n\n>     # Set up: Fill canvas with blue\n>     canvas.fill(\"blue\")\n>\n>     # Clear a portion of the canvas\n>     canvas.clear\n>       x: 50\n>       y: 50\n>       width: 50\n>       height: 50\n\n          clear: ({x, y, width, height}={}) ->\n            x ?= 0\n            y ?= 0\n            width = canvas.width unless width?\n            height = canvas.height unless height?\n\n            context.clearRect(x, y, width, height)\n\n            return this\n\nFills the entire canvas (or a specified section of it) with\nthe given color.\n\n>     # Paint the town (entire canvas) red\n>     canvas.fill \"red\"\n>\n>     # Fill a section of the canvas white (#FFF)\n>     canvas.fill\n>       x: 50\n>       y: 50\n>       width: 50\n>       height: 50\n>       color: \"#FFF\"\n\n          fill: (color={}) ->\n            unless (typeof color is \"string\") or color.channels\n              {x, y, width, height, bounds, color} = color\n\n            {x, y, width, height} = bounds if bounds\n\n            x ||= 0\n            y ||= 0\n            width = canvas.width unless width?\n            height = canvas.height unless height?\n\n            @fillColor(color)\n            context.fillRect(x, y, width, height)\n\n            return this\n\nA direct map to the Context2d draw image. `GameObject`s\nthat implement drawable will have this wrapped up nicely,\nso there is a good chance that you will not have to deal with\nit directly.\n\n>     $ \"<img>\",\n>       src: \"https://secure.gravatar.com/avatar/33117162fff8a9cf50544a604f60c045\"\n>       load: ->\n>         canvas.drawImage(this, 25, 25)\n\n          drawImage: (args...) ->\n            context.drawImage(args...)\n\n            return this\n\nDraws a circle at the specified position with the specified\nradius and color.\n\n>     # Draw a large orange circle\n>     canvas.drawCircle\n>       radius: 30\n>       position: Point(100, 75)\n>       color: \"orange\"\n>\n>     # You may also set a stroke\n>     canvas.drawCircle\n>       x: 25\n>       y: 50\n>       radius: 10\n>       color: \"blue\"\n>       stroke:\n>         color: \"red\"\n>         width: 1\n\nYou can pass in circle objects as well.\n\n>     # Create a circle object to set up the next examples\n>     circle =\n>       radius: 20\n>       x: 50\n>       y: 50\n>\n>     # Draw a given circle in yellow\n>     canvas.drawCircle\n>       circle: circle\n>       color: \"yellow\"\n>\n>     # Draw the circle in green at a different position\n>     canvas.drawCircle\n>       circle: circle\n>       position: Point(25, 75)\n>       color: \"green\"\n\nYou may set a stroke, or even pass in only a stroke to draw an unfilled circle.\n\n>     # Draw an outline circle in purple.\n>     canvas.drawCircle\n>       x: 50\n>       y: 75\n>       radius: 10\n>       stroke:\n>         color: \"purple\"\n>         width: 2\n>\n\n          drawCircle: ({x, y, radius, position, color, stroke, circle}) ->\n            {x, y, radius} = circle if circle\n            {x, y} = position if position\n\n            radius = radius.clamp(0, Infinity)\n\n            context.beginPath()\n            context.arc(x, y, radius, 0, Math.TAU, true)\n            context.closePath()\n\n            if color\n              @fillColor(color)\n              context.fill()\n\n            if stroke\n              @strokeColor(stroke.color)\n              @lineWidth(stroke.width)\n              context.stroke()\n\n            return this\n\nDraws a rectangle at the specified position with given\nwidth and height. Optionally takes a position, bounds\nand color argument.\n\n>     # Draw a red rectangle using x, y, width and height\n>     canvas.drawRect\n>       x: 50\n>       y: 50\n>       width: 50\n>       height: 50\n>       color: \"#F00\"\n\nYou can mix and match position, witdth and height.\n\n>     canvas.drawRect\n>       position: Point(0, 0)\n>       width: 50\n>       height: 50\n>       color: \"blue\"\n>       stroke:\n>         color: \"orange\"\n>         width: 3\n\nA bounds can be reused to draw multiple rectangles.\n\n>     bounds =\n>       x: 100\n>       y: 0\n>       width: 100\n>       height: 100\n>\n>     # Draw a purple rectangle using bounds\n>     canvas.drawRect\n>       bounds: bounds\n>       color: \"green\"\n>\n>     # Draw the outline of the same bounds, but at a different position\n>     canvas.drawRect\n>       bounds: bounds\n>       position: Point(0, 50)\n>       stroke:\n>         color: \"purple\"\n>         width: 2\n\n          drawRect: ({x, y, width, height, position, bounds, color, stroke}) ->\n            {x, y, width, height} = bounds if bounds\n            {x, y} = position if position\n\n            if color\n              @fillColor(color)\n              context.fillRect(x, y, width, height)\n\n            if stroke\n              @strokeColor(stroke.color)\n              @lineWidth(stroke.width)\n              context.strokeRect(x, y, width, height)\n\n            return @\n\nDraw a line from `start` to `end`.\n\n>     # Draw a sweet diagonal\n>     canvas.drawLine\n>       start: Point(0, 0)\n>       end: Point(200, 200)\n>       color: \"purple\"\n>\n>     # Draw another sweet diagonal\n>     canvas.drawLine\n>       start: Point(200, 0)\n>       end: Point(0, 200)\n>       color: \"red\"\n>       width: 6\n>\n>     # Now draw a sweet horizontal with a direction and a length\n>     canvas.drawLine\n>       start: Point(0, 100)\n>       length: 200\n>       direction: Point(1, 0)\n>       color: \"orange\"\n\n          drawLine: ({start, end, width, color, direction, length}) ->\n            width ||= 3\n\n            if direction\n              end = direction.norm(length).add(start)\n\n            @lineWidth(width)\n            @strokeColor(color)\n\n            context.beginPath()\n            context.moveTo(start.x, start.y)\n            context.lineTo(end.x, end.y)\n            context.closePath()\n            context.stroke()\n\n            return this\n\nDraw a polygon.\n\n>     # Draw a sweet rhombus\n>     canvas.drawPoly\n>       points: [\n>         Point(50, 25)\n>         Point(75, 50)\n>         Point(50, 75)\n>         Point(25, 50)\n>       ]\n>       color: \"purple\"\n>       stroke:\n>         color: \"red\"\n>         width: 2\n\n          drawPoly: ({points, color, stroke}) ->\n            context.beginPath()\n            points.forEach (point, i) ->\n              if i == 0\n                context.moveTo(point.x, point.y)\n              else\n                context.lineTo(point.x, point.y)\n            context.lineTo points[0].x, points[0].y\n\n            if color\n              @fillColor(color)\n              context.fill()\n\n            if stroke\n              @strokeColor(stroke.color)\n              @lineWidth(stroke.width)\n              context.stroke()\n\n            return @\n\nDraw a rounded rectangle.\n\nAdapted from http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html\n\n>     # Draw a purple rounded rectangle with a red outline\n>     canvas.drawRoundRect\n>       position: Point(25, 25)\n>       radius: 10\n>       width: 150\n>       height: 100\n>       color: \"purple\"\n>       stroke:\n>         color: \"red\"\n>         width: 2\n\n          drawRoundRect: ({x, y, width, height, radius, position, bounds, color, stroke}) ->\n            radius = 5 unless radius?\n\n            {x, y, width, height} = bounds if bounds\n            {x, y} = position if position\n\n            context.beginPath()\n            context.moveTo(x + radius, y)\n            context.lineTo(x + width - radius, y)\n            context.quadraticCurveTo(x + width, y, x + width, y + radius)\n            context.lineTo(x + width, y + height - radius)\n            context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height)\n            context.lineTo(x + radius, y + height)\n            context.quadraticCurveTo(x, y + height, x, y + height - radius)\n            context.lineTo(x, y + radius)\n            context.quadraticCurveTo(x, y, x + radius, y)\n            context.closePath()\n\n            if color\n              @fillColor(color)\n              context.fill()\n\n            if stroke\n              @lineWidth(stroke.width)\n              @strokeColor(stroke.color)\n              context.stroke()\n\n            return this\n\nDraws text on the canvas at the given position, in the given color.\nIf no color is given then the previous fill color is used.\n\n>     # Fill canvas to indicate bounds\n>     canvas.fill\n>       color: '#eee'\n>\n>     # A line to indicate the baseline\n>     canvas.drawLine\n>       start: Point(25, 50)\n>       end: Point(125, 50)\n>       color: \"#333\"\n>       width: 1\n>\n>     # Draw some text, note the position of the baseline\n>     canvas.drawText\n>       position: Point(25, 50)\n>       color: \"red\"\n>       text: \"It's dangerous to go alone\"\n\n\n          drawText: ({x, y, text, position, color, font}) ->\n            {x, y} = position if position\n\n            @fillColor(color)\n            @font(font) if font\n            context.fillText(text, x, y)\n\n            return this\n\nCenters the given text on the canvas at the given y position. An x position\nor point position can also be given in which case the text is centered at the\nx, y or position value specified.\n\n>     # Fill canvas to indicate bounds\n>     canvas.fill\n>       color: \"#eee\"\n>\n>     # A line to indicate the baseline\n>     canvas.drawLine\n>       start: Point(25, 25)\n>       end: Point(125, 25)\n>       color: \"#333\"\n>       width: 1\n>\n>     # Center text on the screen at y value 25\n>     canvas.centerText\n>       y: 25\n>       color: \"red\"\n>       text: \"It's dangerous to go alone\"\n>\n>     # Center text at point (75, 75)\n>     canvas.centerText\n>       position: Point(75, 75)\n>       color: \"green\"\n>       text: \"take this\"\n\n          centerText: ({text, x, y, position, color, font}) ->\n            {x, y} = position if position\n\n            x = canvas.width / 2 unless x?\n\n            textWidth = @measureText(text)\n\n            @drawText {\n              text\n              color\n              font\n              x: x - (textWidth) / 2\n              y\n            }\n\nSetting the fill color:\n\n`canvas.fillColor(\"#FF0000\")`\n\nPassing no arguments returns the fillColor:\n\n`canvas.fillColor() # => \"#FF000000\"`\n\nYou can also pass a Color object:\n\n`canvas.fillColor(Color('sky blue'))`\n\n          fillColor: (color) ->\n            if color\n              if color.channels\n                context.fillStyle = color.toString()\n              else\n                context.fillStyle = color\n\n              return @\n            else\n              return context.fillStyle\n\nSetting the stroke color:\n\n`canvas.strokeColor(\"#FF0000\")`\n\nPassing no arguments returns the strokeColor:\n\n`canvas.strokeColor() # => \"#FF0000\"`\n\nYou can also pass a Color object:\n\n`canvas.strokeColor(Color('sky blue'))`\n\n          strokeColor: (color) ->\n            if color\n              if color.channels\n                context.strokeStyle = color.toString()\n              else\n                context.strokeStyle = color\n\n              return this\n            else\n              return context.strokeStyle\n\nDetermine how wide some text is.\n\n`canvas.measureText('Hello World!') # => 55`\n\nIt may have accuracy issues depending on the font used.\n\n          measureText: (text) ->\n            context.measureText(text).width\n\nPasses this canvas to the block with the given matrix transformation\napplied. All drawing methods called within the block will draw\ninto the canvas with the transformation applied. The transformation\nis removed at the end of the block, even if the block throws an error.\n\n          withTransform: (matrix, block) ->\n            context.save()\n\n            context.transform(\n              matrix.a,\n              matrix.b,\n              matrix.c,\n              matrix.d,\n              matrix.tx,\n              matrix.ty\n            )\n\n            try\n              block(this)\n            finally\n              context.restore()\n\n            return this\n\nStraight proxy to context `putImageData` method.\n\n          putImageData: (args...) ->\n            context.putImageData(args...)\n\n            return this\n\nContext getter.\n\n          context: ->\n            context\n\nGetter for the actual html canvas element.\n\n          element: ->\n            canvas\n\nStraight proxy to context pattern creation.\n\n          createPattern: (image, repitition) ->\n            context.createPattern(image, repitition)\n\nSet a clip rectangle.\n\n          clip: (x, y, width, height) ->\n            context.beginPath()\n            context.rect(x, y, width, height)\n            context.clip()\n\n            return this\n\nGenerate accessors that get properties from the context object.\n\n        contextAttrAccessor = (attrs...) ->\n          attrs.forEach (attr) ->\n            $canvas[attr] = (newVal) ->\n              if newVal?\n                context[attr] = newVal\n                return @\n              else\n                context[attr]\n\n        contextAttrAccessor(\n          \"font\",\n          \"globalAlpha\",\n          \"globalCompositeOperation\",\n          \"lineWidth\",\n          \"textAlign\",\n        )\n\nGenerate accessors that get properties from the canvas object.\n\n        canvasAttrAccessor = (attrs...) ->\n          attrs.forEach (attr) ->\n            $canvas[attr] = (newVal) ->\n              if newVal?\n                canvas[attr] = newVal\n                return @\n              else\n                canvas[attr]\n\n        canvasAttrAccessor(\n          \"height\",\n          \"width\",\n        )\n\n        if canvas?.getContext\n          context = canvas.getContext('2d')\n\n          if options.init\n            options.init($canvas)\n\n          return $canvas\n\nDepend on either jQuery or Zepto for now (TODO: Don't depend on either)\n\n    )(jQuery ? Zepto)\n",
+      "type": "blob"
+    },
+    "pixie.cson": {
+      "path": "pixie.cson",
+      "mode": "100644",
+      "content": "entryPoint: \"pixie_canvas\"\nversion: \"0.8.0\"\nremoteDependencies: [\n  \"//code.jquery.com/jquery-1.10.1.min.js\"\n  \"http://strd6.github.io/tempest/javascripts/envweb.js\"\n  \"http://strd6.github.io/require/v0.2.0.js\"\n]\n",
+      "type": "blob"
+    },
+    "test/test.coffee": {
+      "path": "test/test.coffee",
+      "mode": "100644",
+      "content": "require \"../pixie_canvas\"\n\ndescribe \"pixie canvas\", ->\n  it \"Should exist\", ->\n    assert $.fn.pixieCanvas\n",
+      "type": "blob"
+    }
+  },
+  "distribution": {
+    "package": {
+      "path": "package",
+      "content": "module.exports = {\"name\":\"pixie-canvas\",\"version\":\"0.8.0\",\"description\":\"Wrapper for HTML5 canvas\",\"devDependencies\":{\"coffee-script\":\"~1.6.3\",\"mocha\":\"~1.12.0\",\"uglify-js\":\"~2.3.6\",\"docco\":\"~0.6.2\"},\"dependencies\":{\"athletic-support\":\"~0.1.0\"},\"repository\":{\"type\":\"git\",\"url\":\"https://github.com/STRd6/pixie-canvas.git\"},\"files\":[\"dist\"],\"scripts\":{\"prepublish\":\"script/prepublish\",\"test\":\"script/test\"},\"main\":\"dist/pixie-canvas.js\"};",
+      "type": "blob"
+    },
+    "pixie_canvas": {
+      "path": "pixie_canvas",
+      "content": "(function() {\n  var __slice = [].slice;\n\n  (function($) {\n    this.Point = function(x, y) {\n      return {\n        x: x,\n        y: y\n      };\n    };\n    Number.prototype.clamp = function(min, max) {\n      return Math.min(Math.max(min, this), max);\n    };\n    Math.TAU = 2 * Math.PI;\n    return $.fn.pixieCanvas = function(options) {\n      var $canvas, canvas, canvasAttrAccessor, context, contextAttrAccessor;\n      if (options == null) {\n        options = {};\n      }\n      canvas = this.get(0);\n      context = void 0;\n      $canvas = $.extend($(canvas), {\n        clear: function(_arg) {\n          var height, width, x, y, _ref;\n          _ref = _arg != null ? _arg : {}, x = _ref.x, y = _ref.y, width = _ref.width, height = _ref.height;\n          if (x == null) {\n            x = 0;\n          }\n          if (y == null) {\n            y = 0;\n          }\n          if (width == null) {\n            width = canvas.width;\n          }\n          if (height == null) {\n            height = canvas.height;\n          }\n          context.clearRect(x, y, width, height);\n          return this;\n        },\n        fill: function(color) {\n          var bounds, height, width, x, y, _ref;\n          if (color == null) {\n            color = {};\n          }\n          if (!((typeof color === \"string\") || color.channels)) {\n            _ref = color, x = _ref.x, y = _ref.y, width = _ref.width, height = _ref.height, bounds = _ref.bounds, color = _ref.color;\n          }\n          if (bounds) {\n            x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height;\n          }\n          x || (x = 0);\n          y || (y = 0);\n          if (width == null) {\n            width = canvas.width;\n          }\n          if (height == null) {\n            height = canvas.height;\n          }\n          this.fillColor(color);\n          context.fillRect(x, y, width, height);\n          return this;\n        },\n        drawImage: function() {\n          var args;\n          args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];\n          context.drawImage.apply(context, args);\n          return this;\n        },\n        drawCircle: function(_arg) {\n          var circle, color, position, radius, stroke, x, y;\n          x = _arg.x, y = _arg.y, radius = _arg.radius, position = _arg.position, color = _arg.color, stroke = _arg.stroke, circle = _arg.circle;\n          if (circle) {\n            x = circle.x, y = circle.y, radius = circle.radius;\n          }\n          if (position) {\n            x = position.x, y = position.y;\n          }\n          radius = radius.clamp(0, Infinity);\n          context.beginPath();\n          context.arc(x, y, radius, 0, Math.TAU, true);\n          context.closePath();\n          if (color) {\n            this.fillColor(color);\n            context.fill();\n          }\n          if (stroke) {\n            this.strokeColor(stroke.color);\n            this.lineWidth(stroke.width);\n            context.stroke();\n          }\n          return this;\n        },\n        drawRect: function(_arg) {\n          var bounds, color, height, position, stroke, width, x, y;\n          x = _arg.x, y = _arg.y, width = _arg.width, height = _arg.height, position = _arg.position, bounds = _arg.bounds, color = _arg.color, stroke = _arg.stroke;\n          if (bounds) {\n            x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height;\n          }\n          if (position) {\n            x = position.x, y = position.y;\n          }\n          if (color) {\n            this.fillColor(color);\n            context.fillRect(x, y, width, height);\n          }\n          if (stroke) {\n            this.strokeColor(stroke.color);\n            this.lineWidth(stroke.width);\n            context.strokeRect(x, y, width, height);\n          }\n          return this;\n        },\n        drawLine: function(_arg) {\n          var color, direction, end, length, start, width;\n          start = _arg.start, end = _arg.end, width = _arg.width, color = _arg.color, direction = _arg.direction, length = _arg.length;\n          width || (width = 3);\n          if (direction) {\n            end = direction.norm(length).add(start);\n          }\n          this.lineWidth(width);\n          this.strokeColor(color);\n          context.beginPath();\n          context.moveTo(start.x, start.y);\n          context.lineTo(end.x, end.y);\n          context.closePath();\n          context.stroke();\n          return this;\n        },\n        drawPoly: function(_arg) {\n          var color, points, stroke;\n          points = _arg.points, color = _arg.color, stroke = _arg.stroke;\n          context.beginPath();\n          points.forEach(function(point, i) {\n            if (i === 0) {\n              return context.moveTo(point.x, point.y);\n            } else {\n              return context.lineTo(point.x, point.y);\n            }\n          });\n          context.lineTo(points[0].x, points[0].y);\n          if (color) {\n            this.fillColor(color);\n            context.fill();\n          }\n          if (stroke) {\n            this.strokeColor(stroke.color);\n            this.lineWidth(stroke.width);\n            context.stroke();\n          }\n          return this;\n        },\n        drawRoundRect: function(_arg) {\n          var bounds, color, height, position, radius, stroke, width, x, y;\n          x = _arg.x, y = _arg.y, width = _arg.width, height = _arg.height, radius = _arg.radius, position = _arg.position, bounds = _arg.bounds, color = _arg.color, stroke = _arg.stroke;\n          if (radius == null) {\n            radius = 5;\n          }\n          if (bounds) {\n            x = bounds.x, y = bounds.y, width = bounds.width, height = bounds.height;\n          }\n          if (position) {\n            x = position.x, y = position.y;\n          }\n          context.beginPath();\n          context.moveTo(x + radius, y);\n          context.lineTo(x + width - radius, y);\n          context.quadraticCurveTo(x + width, y, x + width, y + radius);\n          context.lineTo(x + width, y + height - radius);\n          context.quadraticCurveTo(x + width, y + height, x + width - radius, y + height);\n          context.lineTo(x + radius, y + height);\n          context.quadraticCurveTo(x, y + height, x, y + height - radius);\n          context.lineTo(x, y + radius);\n          context.quadraticCurveTo(x, y, x + radius, y);\n          context.closePath();\n          if (color) {\n            this.fillColor(color);\n            context.fill();\n          }\n          if (stroke) {\n            this.lineWidth(stroke.width);\n            this.strokeColor(stroke.color);\n            context.stroke();\n          }\n          return this;\n        },\n        drawText: function(_arg) {\n          var color, font, position, text, x, y;\n          x = _arg.x, y = _arg.y, text = _arg.text, position = _arg.position, color = _arg.color, font = _arg.font;\n          if (position) {\n            x = position.x, y = position.y;\n          }\n          this.fillColor(color);\n          if (font) {\n            this.font(font);\n          }\n          context.fillText(text, x, y);\n          return this;\n        },\n        centerText: function(_arg) {\n          var color, font, position, text, textWidth, x, y;\n          text = _arg.text, x = _arg.x, y = _arg.y, position = _arg.position, color = _arg.color, font = _arg.font;\n          if (position) {\n            x = position.x, y = position.y;\n          }\n          if (x == null) {\n            x = canvas.width / 2;\n          }\n          textWidth = this.measureText(text);\n          return this.drawText({\n            text: text,\n            color: color,\n            font: font,\n            x: x - textWidth / 2,\n            y: y\n          });\n        },\n        fillColor: function(color) {\n          if (color) {\n            if (color.channels) {\n              context.fillStyle = color.toString();\n            } else {\n              context.fillStyle = color;\n            }\n            return this;\n          } else {\n            return context.fillStyle;\n          }\n        },\n        strokeColor: function(color) {\n          if (color) {\n            if (color.channels) {\n              context.strokeStyle = color.toString();\n            } else {\n              context.strokeStyle = color;\n            }\n            return this;\n          } else {\n            return context.strokeStyle;\n          }\n        },\n        measureText: function(text) {\n          return context.measureText(text).width;\n        },\n        withTransform: function(matrix, block) {\n          context.save();\n          context.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);\n          try {\n            block(this);\n          } finally {\n            context.restore();\n          }\n          return this;\n        },\n        putImageData: function() {\n          var args;\n          args = 1 <= arguments.length ? __slice.call(arguments, 0) : [];\n          context.putImageData.apply(context, args);\n          return this;\n        },\n        context: function() {\n          return context;\n        },\n        element: function() {\n          return canvas;\n        },\n        createPattern: function(image, repitition) {\n          return context.createPattern(image, repitition);\n        },\n        clip: function(x, y, width, height) {\n          context.beginPath();\n          context.rect(x, y, width, height);\n          context.clip();\n          return this;\n        }\n      });\n      contextAttrAccessor = function() {\n        var attrs;\n        attrs = 1 <= arguments.length ? __slice.call(arguments, 0) : [];\n        return attrs.forEach(function(attr) {\n          return $canvas[attr] = function(newVal) {\n            if (newVal != null) {\n              context[attr] = newVal;\n              return this;\n            } else {\n              return context[attr];\n            }\n          };\n        });\n      };\n      contextAttrAccessor(\"font\", \"globalAlpha\", \"globalCompositeOperation\", \"lineWidth\", \"textAlign\");\n      canvasAttrAccessor = function() {\n        var attrs;\n        attrs = 1 <= arguments.length ? __slice.call(arguments, 0) : [];\n        return attrs.forEach(function(attr) {\n          return $canvas[attr] = function(newVal) {\n            if (newVal != null) {\n              canvas[attr] = newVal;\n              return this;\n            } else {\n              return canvas[attr];\n            }\n          };\n        });\n      };\n      canvasAttrAccessor(\"height\", \"width\");\n      if (canvas != null ? canvas.getContext : void 0) {\n        context = canvas.getContext('2d');\n        if (options.init) {\n          options.init($canvas);\n        }\n        return $canvas;\n      }\n    };\n  })(typeof jQuery !== \"undefined\" && jQuery !== null ? jQuery : Zepto);\n\n}).call(this);\n",
+      "type": "blob"
+    },
+    "pixie": {
+      "path": "pixie",
+      "content": "module.exports = {\"entryPoint\":\"pixie_canvas\",\"version\":\"0.8.0\",\"remoteDependencies\":[\"//code.jquery.com/jquery-1.10.1.min.js\",\"http://strd6.github.io/tempest/javascripts/envweb.js\",\"http://strd6.github.io/require/v0.2.0.js\"]};",
+      "type": "blob"
+    },
+    "test/test": {
+      "path": "test/test",
+      "content": "(function() {\n  require(\"../pixie_canvas\");\n\n  describe(\"pixie canvas\", function() {\n    return it(\"Should exist\", function() {\n      return assert($.fn.pixieCanvas);\n    });\n  });\n\n}).call(this);\n",
+      "type": "blob"
+    }
+  },
+  "entryPoint": "pixie_canvas",
+  "dependencies": {},
+  "remoteDependencies": [
+    "//code.jquery.com/jquery-1.10.1.min.js",
+    "http://strd6.github.io/tempest/javascripts/envweb.js",
+    "http://strd6.github.io/require/v0.2.0.js"
+  ],
+  "repository": {
+    "id": 12096899,
+    "name": "pixie-canvas",
+    "full_name": "STRd6/pixie-canvas",
+    "owner": {
+      "login": "STRd6",
+      "id": 18894,
+      "avatar_url": "https://0.gravatar.com/avatar/33117162fff8a9cf50544a604f60c045?d=https%3A%2F%2Fidenticons.github.com%2F39df222bffe39629d904e4883eabc654.png",
+      "gravatar_id": "33117162fff8a9cf50544a604f60c045",
+      "url": "https://api.github.com/users/STRd6",
+      "html_url": "https://github.com/STRd6",
+      "followers_url": "https://api.github.com/users/STRd6/followers",
+      "following_url": "https://api.github.com/users/STRd6/following{/other_user}",
+      "gists_url": "https://api.github.com/users/STRd6/gists{/gist_id}",
+      "starred_url": "https://api.github.com/users/STRd6/starred{/owner}{/repo}",
+      "subscriptions_url": "https://api.github.com/users/STRd6/subscriptions",
+      "organizations_url": "https://api.github.com/users/STRd6/orgs",
+      "repos_url": "https://api.github.com/users/STRd6/repos",
+      "events_url": "https://api.github.com/users/STRd6/events{/privacy}",
+      "received_events_url": "https://api.github.com/users/STRd6/received_events",
+      "type": "User"
+    },
+    "private": false,
+    "html_url": "https://github.com/STRd6/pixie-canvas",
+    "description": "A pretty ok HTML5 canvas wrapper",
+    "fork": false,
+    "url": "https://api.github.com/repos/STRd6/pixie-canvas",
+    "forks_url": "https://api.github.com/repos/STRd6/pixie-canvas/forks",
+    "keys_url": "https://api.github.com/repos/STRd6/pixie-canvas/keys{/key_id}",
+    "collaborators_url": "https://api.github.com/repos/STRd6/pixie-canvas/collaborators{/collaborator}",
+    "teams_url": "https://api.github.com/repos/STRd6/pixie-canvas/teams",
+    "hooks_url": "https://api.github.com/repos/STRd6/pixie-canvas/hooks",
+    "issue_events_url": "https://api.github.com/repos/STRd6/pixie-canvas/issues/events{/number}",
+    "events_url": "https://api.github.com/repos/STRd6/pixie-canvas/events",
+    "assignees_url": "https://api.github.com/repos/STRd6/pixie-canvas/assignees{/user}",
+    "branches_url": "https://api.github.com/repos/STRd6/pixie-canvas/branches{/branch}",
+    "tags_url": "https://api.github.com/repos/STRd6/pixie-canvas/tags",
+    "blobs_url": "https://api.github.com/repos/STRd6/pixie-canvas/git/blobs{/sha}",
+    "git_tags_url": "https://api.github.com/repos/STRd6/pixie-canvas/git/tags{/sha}",
+    "git_refs_url": "https://api.github.com/repos/STRd6/pixie-canvas/git/refs{/sha}",
+    "trees_url": "https://api.github.com/repos/STRd6/pixie-canvas/git/trees{/sha}",
+    "statuses_url": "https://api.github.com/repos/STRd6/pixie-canvas/statuses/{sha}",
+    "languages_url": "https://api.github.com/repos/STRd6/pixie-canvas/languages",
+    "stargazers_url": "https://api.github.com/repos/STRd6/pixie-canvas/stargazers",
+    "contributors_url": "https://api.github.com/repos/STRd6/pixie-canvas/contributors",
+    "subscribers_url": "https://api.github.com/repos/STRd6/pixie-canvas/subscribers",
+    "subscription_url": "https://api.github.com/repos/STRd6/pixie-canvas/subscription",
+    "commits_url": "https://api.github.com/repos/STRd6/pixie-canvas/commits{/sha}",
+    "git_commits_url": "https://api.github.com/repos/STRd6/pixie-canvas/git/commits{/sha}",
+    "comments_url": "https://api.github.com/repos/STRd6/pixie-canvas/comments{/number}",
+    "issue_comment_url": "https://api.github.com/repos/STRd6/pixie-canvas/issues/comments/{number}",
+    "contents_url": "https://api.github.com/repos/STRd6/pixie-canvas/contents/{+path}",
+    "compare_url": "https://api.github.com/repos/STRd6/pixie-canvas/compare/{base}...{head}",
+    "merges_url": "https://api.github.com/repos/STRd6/pixie-canvas/merges",
+    "archive_url": "https://api.github.com/repos/STRd6/pixie-canvas/{archive_format}{/ref}",
+    "downloads_url": "https://api.github.com/repos/STRd6/pixie-canvas/downloads",
+    "issues_url": "https://api.github.com/repos/STRd6/pixie-canvas/issues{/number}",
+    "pulls_url": "https://api.github.com/repos/STRd6/pixie-canvas/pulls{/number}",
+    "milestones_url": "https://api.github.com/repos/STRd6/pixie-canvas/milestones{/number}",
+    "notifications_url": "https://api.github.com/repos/STRd6/pixie-canvas/notifications{?since,all,participating}",
+    "labels_url": "https://api.github.com/repos/STRd6/pixie-canvas/labels{/name}",
+    "created_at": "2013-08-14T01:15:34Z",
+    "updated_at": "2013-08-14T19:42:48Z",
+    "pushed_at": "2013-08-14T19:42:47Z",
+    "git_url": "git://github.com/STRd6/pixie-canvas.git",
+    "ssh_url": "git@github.com:STRd6/pixie-canvas.git",
+    "clone_url": "https://github.com/STRd6/pixie-canvas.git",
+    "svn_url": "https://github.com/STRd6/pixie-canvas",
+    "homepage": null,
+    "size": 376,
+    "watchers_count": 0,
+    "language": "CoffeeScript",
+    "has_issues": true,
+    "has_downloads": true,
+    "has_wiki": true,
+    "forks_count": 0,
+    "mirror_url": null,
+    "open_issues_count": 0,
+    "forks": 0,
+    "open_issues": 0,
+    "watchers": 0,
+    "master_branch": "master",
+    "default_branch": "master",
+    "permissions": {
+      "admin": true,
+      "push": true,
+      "pull": true
+    },
+    "network_count": 0,
+    "branch": "master",
+    "defaultBranch": "master",
+    "includedModules": [
+      "Bindable"
+    ]
+  },
+  "progenitor": {
+    "url": "http://strd6.github.io/editor/"
+  }
+});
+</script>
+</body>
+</html>
