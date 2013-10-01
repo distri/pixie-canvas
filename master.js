@@ -8,9 +8,6 @@
         y: y
       };
     };
-    Number.prototype.clamp = function(min, max) {
-      return Math.min(Math.max(min, this), max);
-    };
     Math.TAU = 2 * Math.PI;
     return $.fn.pixieCanvas = function(options) {
       var $canvas, canvas, canvasAttrAccessor, context, contextAttrAccessor;
@@ -76,7 +73,9 @@
           if (position) {
             x = position.x, y = position.y;
           }
-          radius = radius.clamp(0, Infinity);
+          if (radius < 0) {
+            radius = 0;
+          }
           context.beginPath();
           context.arc(x, y, radius, 0, Math.TAU, true);
           context.closePath();
