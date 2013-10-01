@@ -173,6 +173,22 @@ Draws a rectangle at the specified position with given
 width and height. Optionally takes a position, bounds
 and color argument.
 
+
+          drawRect: ({x, y, width, height, position, bounds, color, stroke}) ->
+            {x, y, width, height} = bounds if bounds
+            {x, y} = position if position
+
+            if color
+              @fillColor(color)
+              context.fillRect(x, y, width, height)
+
+            if stroke
+              @strokeColor(stroke.color)
+              @lineWidth(stroke.width)
+              context.strokeRect(x, y, width, height)
+
+            return @
+
 >     #! paint
 >     # Draw a red rectangle using x, y, width and height
 >     canvas.drawRect
@@ -219,21 +235,6 @@ A bounds can be reused to draw multiple rectangles.
 >       stroke:
 >         color: "purple"
 >         width: 2
-
-          drawRect: ({x, y, width, height, position, bounds, color, stroke}) ->
-            {x, y, width, height} = bounds if bounds
-            {x, y} = position if position
-
-            if color
-              @fillColor(color)
-              context.fillRect(x, y, width, height)
-
-            if stroke
-              @strokeColor(stroke.color)
-              @lineWidth(stroke.width)
-              context.strokeRect(x, y, width, height)
-
-            return @
 
 Draw a line from `start` to `end`.
 
