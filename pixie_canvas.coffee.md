@@ -236,6 +236,8 @@ A bounds can be reused to draw multiple rectangles.
 >         color: "purple"
 >         width: 2
 
+----
+
 Draw a line from `start` to `end`.
 
 >     #! paint
@@ -396,13 +398,6 @@ x, y or position value specified.
 >     # Fill canvas to indicate bounds
 >     canvas.fill
 >       color: "#eee"
->
->     # A line to indicate the baseline
->     canvas.drawLine
->       start: Point(25, 25)
->       end: Point(125, 25)
->       color: "#333"
->       width: 1
 >
 >     # Center text on the screen at y value 25
 >     canvas.centerText
