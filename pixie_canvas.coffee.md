@@ -7,22 +7,21 @@ Methods try to be as flexible as possible as to what arguments they take.
 
 Non-getter methods return `this` for method chaining.
 
-    ( ($) ->
+    TAU = 2 * Math.PI
 
-Polyfill some dependencies. TODO: Probably eliminate these if possible.
+    module.exports = (options={}) ->
+        defaults options,
+          width: 400
+          height: 400
+          init: ->
 
-      @Point = (x, y) ->
-        x: x
-        y: y
+        canvas = document.createElement "canvas"
+        canvas.width = options.width
+        canvas.height = options.height
 
-      Math.TAU = 2 * Math.PI
-
-      $.fn.pixieCanvas = (options={}) ->
-        canvas = this.get(0)
         context = undefined
 
-        $canvas = $.extend $(canvas),
-
+        self =
 
 `clear` clears the entire canvas (or a portion of it).
 
@@ -156,7 +155,7 @@ You may set a stroke, or even pass in only a stroke to draw an unfilled circle.
             radius = 0 if radius < 0
 
             context.beginPath()
-            context.arc(x, y, radius, 0, Math.TAU, true)
+            context.arc(x, y, radius, 0, TAU, true)
             context.closePath()
 
             if color
@@ -173,6 +172,22 @@ You may set a stroke, or even pass in only a stroke to draw an unfilled circle.
 Draws a rectangle at the specified position with given
 width and height. Optionally takes a position, bounds
 and color argument.
+
+
+          drawRect: ({x, y, width, height, position, bounds, color, stroke}) ->
+            {x, y, width, height} = bounds if bounds
+            {x, y} = position if position
+
+            if color
+              @fillColor(color)
+              context.fillRect(x, y, width, height)
+
+            if stroke
+              @strokeColor(stroke.color)
+              @lineWidth(stroke.width)
+              context.strokeRect(x, y, width, height)
+
+            return @
 
 >     #! paint
 >     # Draw a red rectangle using x, y, width and height
@@ -221,20 +236,7 @@ A bounds can be reused to draw multiple rectangles.
 >         color: "purple"
 >         width: 2
 
-          drawRect: ({x, y, width, height, position, bounds, color, stroke}) ->
-            {x, y, width, height} = bounds if bounds
-            {x, y} = position if position
-
-            if color
-              @fillColor(color)
-              context.fillRect(x, y, width, height)
-
-            if stroke
-              @strokeColor(stroke.color)
-              @lineWidth(stroke.width)
-              context.strokeRect(x, y, width, height)
-
-            return @
+----
 
 Draw a line from `start` to `end`.
 
@@ -397,13 +399,6 @@ x, y or position value specified.
 >     canvas.fill
 >       color: "#eee"
 >
->     # A line to indicate the baseline
->     canvas.drawLine
->       start: Point(25, 25)
->       end: Point(125, 25)
->       color: "#333"
->       width: 1
->
 >     # Center text on the screen at y value 25
 >     canvas.centerText
 >       y: 25
@@ -545,7 +540,7 @@ Generate accessors that get properties from the context object.
 
         contextAttrAccessor = (attrs...) ->
           attrs.forEach (attr) ->
-            $canvas[attr] = (newVal) ->
+            self[attr] = (newVal) ->
               if newVal?
                 context[attr] = newVal
                 return @
@@ -564,7 +559,7 @@ Generate accessors that get properties from the canvas object.
 
         canvasAttrAccessor = (attrs...) ->
           attrs.forEach (attr) ->
-            $canvas[attr] = (newVal) ->
+            self[attr] = (newVal) ->
               if newVal?
                 canvas[attr] = newVal
                 return @
@@ -576,27 +571,44 @@ Generate accessors that get properties from the canvas object.
           "width",
         )
 
-        if canvas?.getContext
-          context = canvas.getContext('2d')
+        context = canvas.getContext('2d')
 
-          if options.init
-            options.init($canvas)
+        options.init(self)
 
-          return $canvas
+        return self
 
 Depend on either jQuery or Zepto for now (TODO: Don't depend on either)
 
-    )(jQuery ? Zepto)
+Helpers
+-------
+
+Fill in default properties for an object, setting them only if they are not
+already present.
+
+    defaults = (target, objects...) ->
+      for object in objects
+        for name of object
+          unless target.hasOwnProperty(name)
+            target[name] = object[name]
+
+      return target
 
 Interactive Examples
 --------------------
 
 >     #! setup
->     require "/pixie_canvas"
+>     Canvas = require "/pixie_canvas"
+>
+>     window.Point ?= (x, y) ->
+>       x: x
+>       y: y
 >
 >     Interactive.register "paint", ({source, runtimeElement}) ->
->       canvasElement = $ "<canvas width=400 height=200>"
+>       canvas = Canvas
+>         width: 400
+>         height: 200
+>
 >       code = CoffeeScript.compile(source)
 >
->       runtimeElement.empty().append canvasElement
->       Function("canvas", code)(canvasElement.pixieCanvas())
+>       runtimeElement.empty().append canvas.element()
+>       Function("canvas", code)(canvas)
