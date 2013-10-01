@@ -15,9 +15,6 @@ Polyfill some dependencies. TODO: Probably eliminate these if possible.
         x: x
         y: y
 
-      Number::clamp = (min, max) ->
-        Math.min(Math.max(min, this), max)
-
       Math.TAU = 2 * Math.PI
 
       $.fn.pixieCanvas = (options={}) ->
@@ -156,7 +153,7 @@ You may set a stroke, or even pass in only a stroke to draw an unfilled circle.
             {x, y, radius} = circle if circle
             {x, y} = position if position
 
-            radius = radius.clamp(0, Infinity)
+            radius = 0 if radius < 0
 
             context.beginPath()
             context.arc(x, y, radius, 0, Math.TAU, true)
