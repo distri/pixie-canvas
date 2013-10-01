@@ -7,9 +7,9 @@ Methods try to be as flexible as possible as to what arguments they take.
 
 Non-getter methods return `this` for method chaining.
 
-      TAU = 2 * Math.PI
+    TAU = 2 * Math.PI
 
-      module.exports = (options={}) ->
+    module.exports = (options={}) ->
         defaults options,
           width: 400
           height: 400
@@ -594,7 +594,7 @@ already present.
         for name of object
           unless target.hasOwnProperty(name)
             target[name] = object[name]
-    
+
       return target
 
 Interactive Examples
