@@ -1,10 +1,10 @@
 {
-  "version": "0.8.0",
+  "version": "0.8.1",
   "source": {
     "pixie.cson": {
       "path": "pixie.cson",
       "mode": "100644",
-      "content": "entryPoint: \"pixie_canvas\"\nversion: \"0.8.0\"\nremoteDependencies: [\n  \"//code.jquery.com/jquery-1.10.1.min.js\"\n  \"http://strd6.github.io/tempest/javascripts/envweb.js\"\n  \"http://strd6.github.io/require/v0.2.0.js\"\n]\n",
+      "content": "entryPoint: \"pixie_canvas\"\nversion: \"0.8.1\"\nremoteDependencies: [\n  \"http://strd6.github.io/require/v0.2.1.js\"\n]\n",
       "type": "blob"
     },
     "pixie_canvas.coffee.md": {
@@ -23,7 +23,7 @@
   "distribution": {
     "pixie": {
       "path": "pixie",
-      "content": "module.exports = {\"entryPoint\":\"pixie_canvas\",\"version\":\"0.8.0\",\"remoteDependencies\":[\"//code.jquery.com/jquery-1.10.1.min.js\",\"http://strd6.github.io/tempest/javascripts/envweb.js\",\"http://strd6.github.io/require/v0.2.0.js\"]};",
+      "content": "module.exports = {\"entryPoint\":\"pixie_canvas\",\"version\":\"0.8.1\",\"remoteDependencies\":[\"http://strd6.github.io/require/v0.2.1.js\"]};",
       "type": "blob"
     },
     "pixie_canvas": {
@@ -40,9 +40,7 @@
   "entryPoint": "pixie_canvas",
   "dependencies": {},
   "remoteDependencies": [
-    "//code.jquery.com/jquery-1.10.1.min.js",
-    "http://strd6.github.io/tempest/javascripts/envweb.js",
-    "http://strd6.github.io/require/v0.2.0.js"
+    "http://strd6.github.io/require/v0.2.1.js"
   ],
   "repository": {
     "id": 12096899,
