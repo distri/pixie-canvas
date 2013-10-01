@@ -1,5 +1,5 @@
 (function() {
-  var TAU,
+  var TAU, defaults,
     __slice = [].slice;
 
   TAU = 2 * Math.PI;
@@ -308,6 +308,20 @@
     context = canvas.getContext('2d');
     options.init(self);
     return self;
+  };
+
+  defaults = function() {
+    var name, object, objects, target, _i, _len;
+    target = arguments[0], objects = 2 <= arguments.length ? __slice.call(arguments, 1) : [];
+    for (_i = 0, _len = objects.length; _i < _len; _i++) {
+      object = objects[_i];
+      for (name in object) {
+        if (!target.hasOwnProperty(name)) {
+          target[name] = object[name];
+        }
+      }
+    }
+    return target;
   };
 
 }).call(this);
