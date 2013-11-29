@@ -1,5 +1,2 @@
 entryPoint: "pixie_canvas"
-version: "0.8.1"
-remoteDependencies: [
-  "http://strd6.github.io/require/v0.2.1.js"
-]
+version: "0.9.0"
