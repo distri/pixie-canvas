@@ -7,5 +7,5 @@ describe "pixie canvas", ->
       height: 150
 
     assert canvas
-    
+
     assert canvas.width() is 400

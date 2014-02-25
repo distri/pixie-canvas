@@ -577,8 +577,6 @@ Generate accessors that get properties from the canvas object.
 
         return self
 
-Depend on either jQuery or Zepto for now (TODO: Don't depend on either)
-
 Helpers
 -------
 
