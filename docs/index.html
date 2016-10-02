@@ -5,39 +5,35 @@
   <title>index</title>
   <meta http-equiv="content-type" content="text/html; charset=UTF-8">
   <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
-  <link rel="stylesheet" media="all" href="http://strd6.github.io/cdn/parallel/docco.css" />
+  <link rel="stylesheet" media="all" href="https://strd6.github.io/cdn/parallel/docco.css" />
 </head>
 <body>
   <div id="container">
     <div id="background"></div>
     <ul class="sections">
-        
-        
-        <li id="section-1">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-1">&#182;</a>
-              </div>
-              <h1 id="pixie-canvas">Pixie Canvas</h1>
+      <li id="section-1">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-1">&#182;</a>
+    </div>
+    <h1 id="pixie-canvas">Pixie Canvas</h1>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-2">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-2">&#182;</a>
-              </div>
-              <p>PixieCanvas provides a convenient wrapper for working with Context2d.</p>
+</li>
+<li id="section-2">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-2">&#182;</a>
+    </div>
+    <p>PixieCanvas provides a convenient wrapper for working with Context2d.</p>
 <p>Methods try to be as flexible as possible as to what arguments they take.</p>
 <p>Non-getter methods return <code>this</code> for method chaining.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">TAU = <span class="number">2</span> * Math.PI
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">TAU = <span class="number">2</span> * Math.PI
 
 module.<span class="function"><span class="title">exports</span></span> = (options={}) -&gt;
     defaults options,
@@ -53,15 +49,13 @@ module.<span class="function"><span class="title">exports</span></span> = (optio
 
     self =</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-3">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-3">&#182;</a>
-              </div>
-              <p><code>clear</code> clears the entire canvas (or a portion of it).</p>
+</li>
+<li id="section-3">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-3">&#182;</a>
+    </div>
+    <p><code>clear</code> clears the entire canvas (or a portion of it).</p>
 <p>To clear the entire canvas use <code>canvas.clear()</code></p>
 <blockquote>
 <pre><code>#! paint
@@ -76,8 +70,8 @@ canvas.clear
   height: 50</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      clear: ({x, y, width, height}={}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      clear: ({x, y, width, height}={}) -&gt;
         x ?= <span class="number">0</span>
         y ?= <span class="number">0</span>
         width = canvas.width <span class="keyword">unless</span> width?
@@ -87,15 +81,13 @@ canvas.clear
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-4">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-4">&#182;</a>
-              </div>
-              <p>Fills the entire canvas (or a specified section of it) with
+</li>
+<li id="section-4">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-4">&#182;</a>
+    </div>
+    <p>Fills the entire canvas (or a specified section of it) with
 the given color.</p>
 <blockquote>
 <pre><code>#! paint
@@ -111,8 +103,8 @@ canvas.fill
   color: &quot;#FFF&quot;</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      fill: (color={}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      fill: (color={}) -&gt;
         <span class="keyword">unless</span> (<span class="keyword">typeof</span> color <span class="keyword">is</span> <span class="string">"string"</span>) <span class="keyword">or</span> color.channels
           {x, y, width, height, bounds, color} = color
 
@@ -128,15 +120,13 @@ canvas.fill
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-5">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-5">&#182;</a>
-              </div>
-              <p>A direct map to the Context2d draw image. <code>GameObject</code>s
+</li>
+<li id="section-5">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-5">&#182;</a>
+    </div>
+    <p>A direct map to the Context2d draw image. <code>GameObject</code>s
 that implement drawable will have this wrapped up nicely,
 so there is a good chance that you will not have to deal with
 it directly.</p>
@@ -148,21 +138,19 @@ $ &quot;&lt;img&gt;&quot;,
     canvas.drawImage(this, 25, 25)</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawImage: (args...) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawImage: (args...) -&gt;
         context.drawImage(args...)
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>Draws a circle at the specified position with the specified
+</li>
+<li id="section-6">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-6">&#182;</a>
+    </div>
+    <p>Draws a circle at the specified position with the specified
 radius and color.</p>
 <blockquote>
 <pre><code>#! paint
@@ -215,8 +203,8 @@ canvas.drawCircle
     width: 2</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawCircle: ({x, y, radius, position, color, stroke, circle}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawCircle: ({x, y, radius, position, color, stroke, circle}) -&gt;
         {x, y, radius} = circle <span class="keyword">if</span> circle
         {x, y} = position <span class="keyword">if</span> position
 
@@ -237,20 +225,18 @@ canvas.drawCircle
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
-              <p>Draws a rectangle at the specified position with given
+</li>
+<li id="section-7">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-7">&#182;</a>
+    </div>
+    <p>Draws a rectangle at the specified position with given
 width and height. Optionally takes a position, bounds
 and color argument.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawRect: ({x, y, width, height, position, bounds, color, stroke}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawRect: ({x, y, width, height, position, bounds, color, stroke}) -&gt;
         {x, y, width, height} = bounds <span class="keyword">if</span> bounds
         {x, y} = position <span class="keyword">if</span> position
 
@@ -265,15 +251,13 @@ and color argument.</p>
 
         <span class="keyword">return</span> @</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <blockquote>
+</li>
+<li id="section-8">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-8">&#182;</a>
+    </div>
+    <blockquote>
 <pre><code>#! paint
 # Draw a red rectangle using x, y, width and height
 canvas.drawRect
@@ -285,19 +269,17 @@ canvas.drawRect
 </blockquote>
 <hr>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-9">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-9">&#182;</a>
-              </div>
-              <p>You can mix and match position, witdth and height.</p>
+</li>
+<li id="section-9">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-9">&#182;</a>
+    </div>
+    <p>You can mix and match position, witdth and height.</p>
 <blockquote>
 <pre><code>#! paint
 canvas.drawRect
@@ -311,19 +293,17 @@ canvas.drawRect
 </blockquote>
 <hr>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-10">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-10">&#182;</a>
-              </div>
-              <p>A bounds can be reused to draw multiple rectangles.</p>
+</li>
+<li id="section-10">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-10">&#182;</a>
+    </div>
+    <p>A bounds can be reused to draw multiple rectangles.</p>
 <blockquote>
 <pre><code>#! paint
 bounds =
@@ -347,19 +327,17 @@ canvas.drawRect
 </blockquote>
 <hr>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-11">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-11">&#182;</a>
-              </div>
-              <p>Draw a line from <code>start</code> to <code>end</code>.</p>
+</li>
+<li id="section-11">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-11">&#182;</a>
+    </div>
+    <p>Draw a line from <code>start</code> to <code>end</code>.</p>
 <blockquote>
 <pre><code>#! paint
 # Draw a sweet diagonal
@@ -383,8 +361,8 @@ canvas.drawLine
   color: &quot;orange&quot;</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawLine: ({start, end, width, color, direction, length}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawLine: ({start, end, width, color, direction, length}) -&gt;
         width ||= <span class="number">3</span>
 
         <span class="keyword">if</span> direction
@@ -396,20 +374,17 @@ canvas.drawLine
         context.beginPath()
         context.moveTo(start.x, start.y)
         context.lineTo(end.x, end.y)
-        context.closePath()
         context.stroke()
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-12">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-12">&#182;</a>
-              </div>
-              <p>Draw a polygon.</p>
+</li>
+<li id="section-12">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-12">&#182;</a>
+    </div>
+    <p>Draw a polygon.</p>
 <blockquote>
 <pre><code>#! paint
 # Draw a sweet rhombus
@@ -426,8 +401,8 @@ canvas.drawPoly
     width: 2</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawPoly: ({points, color, stroke}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawPoly: ({points, color, stroke}) -&gt;
         context.beginPath()
         points.forEach (point, i) -&gt;
           <span class="keyword">if</span> i == <span class="number">0</span>
@@ -447,15 +422,13 @@ canvas.drawPoly
 
         <span class="keyword">return</span> @</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-13">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-13">&#182;</a>
-              </div>
-              <p>Draw a rounded rectangle.</p>
+</li>
+<li id="section-13">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-13">&#182;</a>
+    </div>
+    <p>Draw a rounded rectangle.</p>
 <p>Adapted from <a href="http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html">http://js-bits.blogspot.com/2010/07/canvas-rounded-corner-rectangles.html</a></p>
 <blockquote>
 <pre><code>#! paint
@@ -471,8 +444,8 @@ canvas.drawRoundRect
     width: 2</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawRoundRect: ({x, y, width, height, radius, position, bounds, color, stroke}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawRoundRect: ({x, y, width, height, radius, position, bounds, color, stroke}) -&gt;
         radius = <span class="number">5</span> <span class="keyword">unless</span> radius?
 
         {x, y, width, height} = bounds <span class="keyword">if</span> bounds
@@ -501,15 +474,13 @@ canvas.drawRoundRect
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-14">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-14">&#182;</a>
-              </div>
-              <p>Draws text on the canvas at the given position, in the given color.
+</li>
+<li id="section-14">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-14">&#182;</a>
+    </div>
+    <p>Draws text on the canvas at the given position, in the given color.
 If no color is given then the previous fill color is used.</p>
 <blockquote>
 <pre><code>#! paint
@@ -531,8 +502,8 @@ canvas.drawText
   text: &quot;It&#39;s dangerous to go alone&quot;</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      drawText: ({x, y, text, position, color, font}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      drawText: ({x, y, text, position, color, font}) -&gt;
         {x, y} = position <span class="keyword">if</span> position
 
         <span class="property">@fillColor</span>(color)
@@ -541,15 +512,13 @@ canvas.drawText
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-15">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-15">&#182;</a>
-              </div>
-              <p>Centers the given text on the canvas at the given y position. An x position
+</li>
+<li id="section-15">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-15">&#182;</a>
+    </div>
+    <p>Centers the given text on the canvas at the given y position. An x position
 or point position can also be given in which case the text is centered at the
 x, y or position value specified.</p>
 <blockquote>
@@ -571,8 +540,8 @@ canvas.centerText
   text: &quot;take this&quot;</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      centerText: ({text, x, y, position, color, font}) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      centerText: ({text, x, y, position, color, font}) -&gt;
         {x, y} = position <span class="keyword">if</span> position
 
         x = canvas.width / <span class="number">2</span> <span class="keyword">unless</span> x?
@@ -587,23 +556,21 @@ canvas.centerText
           y
         }</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-16">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-16">&#182;</a>
-              </div>
-              <p>Setting the fill color:</p>
+</li>
+<li id="section-16">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-16">&#182;</a>
+    </div>
+    <p>Setting the fill color:</p>
 <p><code>canvas.fillColor(&quot;#FF0000&quot;)</code></p>
 <p>Passing no arguments returns the fillColor:</p>
 <p><code>canvas.fillColor() # =&gt; &quot;#FF000000&quot;</code></p>
 <p>You can also pass a Color object:</p>
 <p><code>canvas.fillColor(Color(&#39;sky blue&#39;))</code></p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      fillColor: (color) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      fillColor: (color) -&gt;
         <span class="keyword">if</span> color
           <span class="keyword">if</span> color.channels
             context.fillStyle = color.toString()
@@ -614,23 +581,21 @@ canvas.centerText
         <span class="keyword">else</span>
           <span class="keyword">return</span> context.fillStyle</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-17">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-17">&#182;</a>
-              </div>
-              <p>Setting the stroke color:</p>
+</li>
+<li id="section-17">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-17">&#182;</a>
+    </div>
+    <p>Setting the stroke color:</p>
 <p><code>canvas.strokeColor(&quot;#FF0000&quot;)</code></p>
 <p>Passing no arguments returns the strokeColor:</p>
 <p><code>canvas.strokeColor() # =&gt; &quot;#FF0000&quot;</code></p>
 <p>You can also pass a Color object:</p>
 <p><code>canvas.strokeColor(Color(&#39;sky blue&#39;))</code></p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      strokeColor: (color) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      strokeColor: (color) -&gt;
         <span class="keyword">if</span> color
           <span class="keyword">if</span> color.channels
             context.strokeStyle = color.toString()
@@ -641,37 +606,33 @@ canvas.centerText
         <span class="keyword">else</span>
           <span class="keyword">return</span> context.strokeStyle</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-18">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-18">&#182;</a>
-              </div>
-              <p>Determine how wide some text is.</p>
+</li>
+<li id="section-18">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-18">&#182;</a>
+    </div>
+    <p>Determine how wide some text is.</p>
 <p><code>canvas.measureText(&#39;Hello World!&#39;) # =&gt; 55</code></p>
 <p>It may have accuracy issues depending on the font used.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      measureText: (text) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      measureText: (text) -&gt;
         context.measureText(text).width</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-19">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-19">&#182;</a>
-              </div>
-              <p>Passes this canvas to the block with the given matrix transformation
+</li>
+<li id="section-19">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-19">&#182;</a>
+    </div>
+    <p>Passes this canvas to the block with the given matrix transformation
 applied. All drawing methods called within the block will draw
 into the canvas with the transformation applied. The transformation
 is removed at the end of the block, even if the block throws an error.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      withTransform: (matrix, block) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      withTransform: (matrix, block) -&gt;
         context.save()
 
         context.transform(
@@ -684,100 +645,88 @@ is removed at the end of the block, even if the block throws an error.</p>
         )
 
         <span class="keyword">try</span>
-          block(<span class="keyword">this</span>)
+          block.call(<span class="keyword">this</span>, <span class="keyword">this</span>)
         <span class="keyword">finally</span>
           context.restore()
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-20">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-20">&#182;</a>
-              </div>
-              <p>Straight proxy to context <code>putImageData</code> method.</p>
+</li>
+<li id="section-20">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-20">&#182;</a>
+    </div>
+    <p>Straight proxy to context <code>putImageData</code> method.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      putImageData: (args...) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      putImageData: (args...) -&gt;
         context.putImageData(args...)
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-21">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-21">&#182;</a>
-              </div>
-              <p>Context getter.</p>
+</li>
+<li id="section-21">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-21">&#182;</a>
+    </div>
+    <p>Context getter.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      context: -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      context: -&gt;
         context</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-22">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-22">&#182;</a>
-              </div>
-              <p>Getter for the actual html canvas element.</p>
+</li>
+<li id="section-22">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-22">&#182;</a>
+    </div>
+    <p>Getter for the actual html canvas element.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      element: -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      element: -&gt;
         canvas</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-23">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-23">&#182;</a>
-              </div>
-              <p>Straight proxy to context pattern creation.</p>
+</li>
+<li id="section-23">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-23">&#182;</a>
+    </div>
+    <p>Straight proxy to context pattern creation.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      createPattern: (image, repitition) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      createPattern: (image, repitition) -&gt;
         context.createPattern(image, repitition)</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-24">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-24">&#182;</a>
-              </div>
-              <p>Set a clip rectangle.</p>
+</li>
+<li id="section-24">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-24">&#182;</a>
+    </div>
+    <p>Set a clip rectangle.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">      clip: (x, y, width, height) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">      clip: (x, y, width, height) -&gt;
         context.beginPath()
         context.rect(x, y, width, height)
         context.clip()
 
         <span class="keyword">return</span> <span class="keyword">this</span></code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-25">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-25">&#182;</a>
-              </div>
-              <p>Generate accessors that get properties from the context object.</p>
+</li>
+<li id="section-25">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-25">&#182;</a>
+    </div>
+    <p>Generate accessors that get properties from the context object.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">    <span class="function"><span class="title">contextAttrAccessor</span></span> = (attrs...) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">    <span class="function"><span class="title">contextAttrAccessor</span></span> = (attrs...) -&gt;
       attrs.forEach (attr) -&gt;
         self[attr] = (newVal) -&gt;
           <span class="keyword">if</span> newVal?
@@ -794,18 +743,16 @@ is removed at the end of the block, even if the block throws an error.</p>
       <span class="string">"textAlign"</span>,
     )</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-26">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-26">&#182;</a>
-              </div>
-              <p>Generate accessors that get properties from the canvas object.</p>
+</li>
+<li id="section-26">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-26">&#182;</a>
+    </div>
+    <p>Generate accessors that get properties from the canvas object.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">    <span class="function"><span class="title">canvasAttrAccessor</span></span> = (attrs...) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">    <span class="function"><span class="title">canvasAttrAccessor</span></span> = (attrs...) -&gt;
       attrs.forEach (attr) -&gt;
         self[attr] = (newVal) -&gt;
           <span class="keyword">if</span> newVal?
@@ -825,33 +772,29 @@ is removed at the end of the block, even if the block throws an error.</p>
 
     <span class="keyword">return</span> self</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-27">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-27">&#182;</a>
-              </div>
-              <h2 id="helpers">Helpers</h2>
+</li>
+<li id="section-27">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-27">&#182;</a>
+    </div>
+    <h2 id="helpers">Helpers</h2>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-28">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-28">&#182;</a>
-              </div>
-              <p>Fill in default properties for an object, setting them only if they are not
+</li>
+<li id="section-28">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-28">&#182;</a>
+    </div>
+    <p>Fill in default properties for an object, setting them only if they are not
 already present.</p>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">defaults</span></span> = (target, objects...) -&gt;
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript"><span class="function"><span class="title">defaults</span></span> = (target, objects...) -&gt;
   <span class="keyword">for</span> object <span class="keyword">in</span> objects
     <span class="keyword">for</span> name <span class="keyword">of</span> object
       <span class="keyword">unless</span> target.hasOwnProperty(name)
@@ -859,29 +802,25 @@ already present.</p>
 
   <span class="keyword">return</span> target</code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-29">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-29">&#182;</a>
-              </div>
-              <h2 id="interactive-examples">Interactive Examples</h2>
+</li>
+<li id="section-29">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-29">&#182;</a>
+    </div>
+    <h2 id="interactive-examples">Interactive Examples</h2>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
-        
-        <li id="section-30">
-            <div class="annotation">
-              <div class="pilwrap">
-                <a class="pilcrow" href="#section-30">&#182;</a>
-              </div>
-              <blockquote>
+</li>
+<li id="section-30">
+  <div class="annotation">
+    <div class="pilwrap">
+      <a class="pilcrow" href="#section-30">&#182;</a>
+    </div>
+    <blockquote>
 <pre><code>#! setup
 Canvas = require &quot;/pixie_canvas&quot;
 
@@ -900,12 +839,11 @@ Interactive.register &quot;paint&quot;, ({source, runtimeElement}) -&gt;
   Function(&quot;canvas&quot;, code)(canvas)</code></pre>
 </blockquote>
 
-            </div>
-            <div class="content"><pre><code class="lang-coffeescript">
+  </div>
+  <div class="content"><pre><code class="lang-coffeescript">
 </code></pre>
 </div>
-        </li>
-        
+</li>
     </ul>
   </div>
   <script src="https://code.jquery.com/jquery-1.10.1.min.js"></script>
@@ -1030,23 +968,19 @@ Interactive.register &quot;paint&quot;, ({source, runtimeElement}) -&gt;
     }, 0);
   };
 
-  Interactive.register("setup", function(params) {
-    params.code = CoffeeScript.compile(params.source);
-    return exec(params);
-  });
-
-  Interactive.register("setup-js", function(params) {
-    params.code = params.source;
-    return exec(params);
-  });
-
   $(function() {
-    return findInteractiveElements();
+    Interactive.register("setup", function(params) {
+      params.code = CoffeeScript.compile(params.source);
+      return exec(params);
+    });
+    return Interactive.register("setup-js", function(params) {
+      params.code = params.source;
+      return exec(params);
+    });
   });
 
 }).call(this);
 
-//# sourceURL=interactive.coffee
 </script><script src="package.js"></script>
 </body>
 </html>
