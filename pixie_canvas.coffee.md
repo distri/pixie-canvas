@@ -273,7 +273,6 @@ Draw a line from `start` to `end`.
             context.beginPath()
             context.moveTo(start.x, start.y)
             context.lineTo(end.x, end.y)
-            context.closePath()
             context.stroke()
 
             return this
@@ -499,7 +498,7 @@ is removed at the end of the block, even if the block throws an error.
             )
 
             try
-              block(this)
+              block.call(this, this)
             finally
               context.restore()
 
